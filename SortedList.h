@@ -7,6 +7,23 @@ namespace mtm {
 
     template <typename T>
     class SortedList {
+        private:
+        int length;
+        SortedListNode<T>* head;
+        SortedListNode<T>* tail;
+        class SortedListNode { 
+        private:
+            T* data;
+            SortedListNode<T>* next;
+            SortedListNode<T>* previous;
+        public:
+            SortedListNode(T* data = nullptr, SortedListNode<T>* next = nullptr, SortedListNode<T>* previous = nullptr) : data(data), next(next), previous(previous) {}
+            ~SortedListNode() {
+                delete data;
+            }
+        };
+
+
     public:
         /**
          *
