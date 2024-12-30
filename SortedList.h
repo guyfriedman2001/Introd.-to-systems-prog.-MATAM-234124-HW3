@@ -25,6 +25,7 @@ namespace mtm {
 
 
     public:
+        SortedList() : length(0), head(nullptr), tail(nullptr) {}
         /**
          *
          * the class should support the following public interface:
