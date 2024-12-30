@@ -26,6 +26,23 @@ namespace mtm {
 
     public:
         SortedList() : length(0), head(nullptr), tail(nullptr) {}
+
+        SortedList(const SortedList& other) : length(other.length){
+            SortedListNode<T>* currentOther = other.head;
+            SortedListNode<T>* currentNode = this->head;
+             SortedListNode<T>* previousNode = nullptr;
+            while(currentOther != nullptr) {
+                currentNode = new SortedListNode<T>(currentOther->data, nullptr, previousNode);
+                if(previousNode == nullptr) {
+                    this->head = currentNode;
+                }
+                if(previousNode != nullptr) {
+                    previousNode->next = currentNode;
+                }
+                this->tail = currentNode;
+                previousNode = currentNode;
+                currentOther = currentOther->next;
+        }
         /**
          *
          * the class should support the following public interface:
