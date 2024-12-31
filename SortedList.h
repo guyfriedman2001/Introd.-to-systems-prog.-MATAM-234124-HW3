@@ -7,6 +7,38 @@ namespace mtm {
 
     template <typename T>
     class SortedList {
+        template <typename T>
+        class SortedListNode {
+            private:
+            friend class SortedList<T>;
+            SortedListNode<T> * prev;
+            SortedListNode<T> * next;
+            T* data;
+            void add(SortedListNode<T> * newNode) {
+                if (newNode <= this->next){ //TODO create > operator, make null node smallest;
+                    this->next->add(newNode);
+                    return;
+                }
+                this->next->prev = newNode;
+                newNode->next = this->next;
+                this->next = newNode;
+                newNode->prev = this;
+            }
+            SortedListNode() : prev(nullptr), next(nullptr), data(nullptr) {}
+            public:
+            void add(T& data) {
+                if (data == nullptr) {
+                    //TODO invalid argument
+                }
+                SortedListNode<T> * newNode = new SortedListNode<T>(data);
+                this->add(newNode);
+            }
+            ~SortedListNode() {
+                this->prev = nullptr;
+                this->next = nullptr;
+                delete this->data;
+            }
+        };
         private:
         int length;
         SortedListNode<T>* head;
