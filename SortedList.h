@@ -26,7 +26,7 @@ namespace mtm {
             }
             SortedListNode() : prev(nullptr), next(nullptr), data(nullptr) {}
             public:
-            void add(T& data) {
+            void add(T const& const data) {
                 if (data == nullptr) {
                     //TODO invalid argument
                 }
