@@ -2,8 +2,9 @@
 #pragma once
 
 #include "Task.h"
-#include "Person.h" //check if allowed
-#include "SortedList.h" //check if allowed
+#include "SortedList.h"
+#include "Person.h"
+using namespace mtm;
 
 
 /**
@@ -16,7 +17,9 @@ private:
      */
     static const int MAX_PERSONS = 10;
     int numOfEmployees = 0;
-    mtm::Person* employees[MAX_PERSONS];
+    Person* employees[MAX_PERSONS];
+
+    bool isEmployeeExist(const string& personName) const;
 
     // Note - Additional private fields and methods can be added if needed.
 
