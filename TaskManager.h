@@ -2,6 +2,9 @@
 #pragma once
 
 #include "Task.h"
+#include "Person.h" //check if allowed
+#include "SortedList.h" //check if allowed
+
 
 /**
  * @brief Class managing tasks assigned to multiple persons.
@@ -12,6 +15,8 @@ private:
      * @brief Maximum number of persons the TaskManager can handle.
      */
     static const int MAX_PERSONS = 10;
+    int numOfEmployees;
+    mtm::Person* employees[MAX_PERSONS];
 
     // Note - Additional private fields and methods can be added if needed.
 
