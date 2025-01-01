@@ -17,9 +17,9 @@ private:
      */
     static const int MAX_PERSONS = 10;
     int numOfEmployees = 0;
-    Person* employees[MAX_PERSONS];
+    mtm::Person* employees[MAX_PERSONS];
 
-    bool isEmployeeExist(const string& personName) const;
+    Person* isEmployeeExist(const string& personName) const;
 
     // Note - Additional private fields and methods can be added if needed.
 

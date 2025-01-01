@@ -2,11 +2,23 @@
 #include "TaskManager.h"
 using namespace mtm;
 
-bool TaskManager::isEmployeeExist(const string& personName) const{
+mtm::Person* mtm::TaskManager::isEmployeeExist(const string& personName) const{
     for (int i = 0; i < numOfEmployees; i++){
         if (employees[i]->getName() == personName){
-            return true;
+            return employees[i];
         }
     }
-    return false;
+    return nullptr;
+}
+
+void mtm::TaskManager::assignTask(const string &personName, const Task &task){
+    Person* cuurentEmployee = isEmployeeExist(personName);
+    if(cuurentEmployee==nullptr){
+        if(numOfEmployees == MAX_PERSONS){
+            throw std::runtime_error("TaskManager::assignTask: you have reached the maximum number of employees");
+        }
+        cuurentEmployee = new Person(personName);
+        employees[numOfEmployees++] = cuurentEmployee;
+    }
+    cuurentEmployee->assignTask(task);
 }
