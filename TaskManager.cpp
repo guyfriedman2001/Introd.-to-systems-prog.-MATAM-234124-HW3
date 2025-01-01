@@ -22,3 +22,18 @@ void mtm::TaskManager::assignTask(const string &personName, const Task &task){
     }
     cuurentEmployee->assignTask(task);
 }
+
+void mtm::TaskManager::completeTask(const string &personName){
+    Person* cuurentEmployee = isEmployeeExist(personName);
+    if(cuurentEmployee == nullptr){
+       return;
+    }
+    try
+    {
+        cuurentEmployee->completeTask();
+    }
+    catch (const std::runtime_error& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+}
