@@ -15,7 +15,7 @@ private:
      * @brief Maximum number of persons the TaskManager can handle.
      */
     static const int MAX_PERSONS = 10;
-    int numOfEmployees;
+    int numOfEmployees = 0;
     mtm::Person* employees[MAX_PERSONS];
 
     // Note - Additional private fields and methods can be added if needed.
@@ -26,7 +26,7 @@ public:
      *
      * Note - you may add =default if needed.
      */
-    TaskManager();
+    TaskManager() = default;
 
     /**
      * @brief Deleted copy constructor to prevent copying of TaskManager objects.
