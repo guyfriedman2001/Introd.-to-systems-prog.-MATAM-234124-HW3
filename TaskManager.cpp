@@ -62,6 +62,19 @@ SortedList<Task> TaskManager::setPriority(SortedList<Task> tasks, TaskType type,
 void TaskManager::printAllEmployees() const{
     for(int i = 0; i < numOfEmployees; i++){
         std::cout << *employees[i] << std::endl;
+        std::cout << std::endl;
     }
 }
 
+void TaskManager::printAllTasks() const{
+    SortedList<Task> allTasks;
+    for(int i = 0; i < numOfEmployees; i++){
+        SortedList<Task> tasks = employees[i]->getTasks();
+        for(SortedList<Task> currentTask : tasks){
+            allTasks.insert(currentTask.begin().data);
+        }
+    }
+    for(SortedList<Task> currentTask : allTasks){
+        std::cout << *currentTask.begin().data << std::endl;
+    }
+}
