@@ -77,7 +77,7 @@ namespace mtm {
         }
         }
 
-        SortedList& operator=(const SortedList& other) {
+        SortedList<T>& operator=(const SortedList& other) {
             if(this == &other) {
                 return *this;
             }
