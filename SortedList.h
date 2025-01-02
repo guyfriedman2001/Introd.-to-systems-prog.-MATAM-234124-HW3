@@ -107,6 +107,14 @@ namespace mtm {
             }
             return *this;
         }
+        ~SortedList() {
+            SortedListNode<T>* current = this->head;
+            while(current != nullptr) {
+                SortedListNode<T>* next = current->next;
+                delete current;
+                current = next;
+            }
+        }
 
 
         
@@ -118,7 +126,7 @@ namespace mtm {
          * constructors and destructor:
          * 1. SortedList() - creates an empty list. V
          * 2. copy constructor V
-         * 3. operator= - assignment operator
+         * 3. operator= - assignment operator V
          * 4. ~SortedList() - destructor
          *
          * iterator:
