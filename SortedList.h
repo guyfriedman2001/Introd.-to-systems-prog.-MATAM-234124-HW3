@@ -193,15 +193,15 @@ namespace mtm {
          *
          * iterator:
          * 5. class ConstIterator;
-         * 6. begin method
-         * 7. end method
+         * 6. begin method V?
+         * 7. end method V?
          *
          * functions:
          * 8. insert - inserts a new element to the list V
          * 9. remove - removes an element from the list V
          * 10. length - returns the number of elements in the list V
-         * 11. filter - returns a new list with elements that satisfy a given condition V
-         * 12. apply - returns a new list with elements that were modified by an operation V
+         * 11. filter - returns a new list with elements that satisfy a given condition V?
+         * 12. apply - returns a new list with elements that were modified by an operation V?
          */
 
     };

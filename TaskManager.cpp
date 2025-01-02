@@ -59,3 +59,9 @@ SortedList<Task> TaskManager::setPriority(SortedList<Task> tasks, TaskType type,
     return tasks;
 }
 
+void TaskManager::printAllEmployees() const{
+    for(int i = 0; i < numOfEmployees; i++){
+        std::cout << *employees[i] << std::endl;
+    }
+}
+
