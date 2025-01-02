@@ -136,7 +136,7 @@ namespace mtm {
             return this->length;
         }
         
-        void remove(ConstIterator& iter){
+        void remove(ConstIterator<T>& iter){
             if(iter == this->end()) {
                 return;
             }

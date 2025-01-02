@@ -16,6 +16,7 @@ private:
      * @brief Maximum number of persons the TaskManager can handle.
      */
     static const int MAX_PERSONS = 10;
+    static int idCounter;
     int numOfEmployees = 0;
     Person* employees[MAX_PERSONS];
     Person* isEmployeeExist(const string& personName);

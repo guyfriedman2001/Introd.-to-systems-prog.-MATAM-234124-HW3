@@ -2,6 +2,8 @@
 #include "TaskManager.h"
 using namespace mtm;
 
+int TaskManager::idCounter = 0;
+
 Person* TaskManager::isEmployeeExist(const string& personName){
     Person* currentEmployee = nullptr;
     for (int i = 0; i < numOfEmployees; i++){
@@ -21,7 +23,9 @@ void TaskManager::assignTask(const string &personName, const Task &task){
         currentEmployee = new Person(personName);
         employees[numOfEmployees++] = currentEmployee;
     }
-    currentEmployee->assignTask(task);
+    Task newTask(task.getPriority(), task.getType(), task.getDescription());
+    newTask.setId(++idCounter);
+    currentEmployee->assignTask(newTask);
 }
 
 void TaskManager::completeTask(const string &personName){
@@ -73,6 +77,7 @@ void TaskManager::printAllTasks() const{
     for(SortedList<Task> currentTask : allTasks){
         std::cout << *currentTask.begin().data << std::endl;
     }
+    std::cout << std::endl;
 }
 
 void TaskManager::printTasksByType(TaskType type) const{
@@ -81,6 +86,7 @@ void TaskManager::printTasksByType(TaskType type) const{
     for(SortedList<Task> currentTask : tasksByType){
         std::cout << *currentTask.begin().data << std::endl;
     }
+    std::cout << std::endl;
    
 }
 SortedList<Task> TaskManager::getAllEmployeesTasks() const{
