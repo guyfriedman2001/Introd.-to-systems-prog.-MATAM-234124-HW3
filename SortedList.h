@@ -152,6 +152,18 @@ namespace mtm {
             delete iter;
             this->length--;
         }
+
+        template <class Condition>
+        SortedList<T> filter(Condition condition) const{
+            SortedList<T> filteredList;
+            for(const SortedListNode<T>& current : *this){
+                if(condition(current.data)) {
+                    filteredList.insert(current.data);
+                }
+            }
+            return filteredList;
+        }
+
         /**
          *
          * the class should support the following public interface:
@@ -170,7 +182,7 @@ namespace mtm {
          *
          * functions:
          * 8. insert - inserts a new element to the list V
-         * 9. remove - removes an element from the list
+         * 9. remove - removes an element from the list V
          * 10. length - returns the number of elements in the list V
          * 11. filter - returns a new list with elements that satisfy a given condition
          * 12. apply - returns a new list with elements that were modified by an operation
