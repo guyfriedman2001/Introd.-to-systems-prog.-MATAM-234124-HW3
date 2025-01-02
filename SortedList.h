@@ -164,6 +164,15 @@ namespace mtm {
             return filteredList;
         }
 
+        template <class Function>
+        SortedList<T> apply(Function function) const{
+            SortedList<T> appliedList;
+            for(const SortedListNode<T>& current : *this){
+                appliedList.insert(function(current.data));
+            }
+            return appliedList;
+        }
+        
         /**
          *
          * the class should support the following public interface:
