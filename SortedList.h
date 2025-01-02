@@ -127,12 +127,14 @@ namespace mtm {
                 this->tail = this->head;
                 this->length = 1;
                 return;
-            }
-            
+            }  
             this->head->add(newElement);
             this->length++;
         }
 
+        int length() const {
+            return this->length;
+        }
         
         /**
          *
@@ -151,7 +153,7 @@ namespace mtm {
          * 7. end method
          *
          * functions:
-         * 8. insert - inserts a new element to the list
+         * 8. insert - inserts a new element to the list V
          * 9. remove - removes an element from the list
          * 10. length - returns the number of elements in the list
          * 11. filter - returns a new list with elements that satisfy a given condition
