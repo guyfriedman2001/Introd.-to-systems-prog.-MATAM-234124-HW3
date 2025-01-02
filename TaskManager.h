@@ -18,7 +18,7 @@ private:
     static const int MAX_PERSONS = 10;
     int numOfEmployees = 0;
     Person* employees[MAX_PERSONS];
-    Person* isEmployeeExist(const string& personName) const;
+    Person* isEmployeeExist(const string& personName);
     SortedList<Task> setPriority(SortedList<Task> tasks, TaskType type, int priority);
     SortedList<Task> getAllEmployeesTasks() const;
 

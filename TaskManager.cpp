@@ -2,35 +2,36 @@
 #include "TaskManager.h"
 using namespace mtm;
 
-Person* TaskManager::isEmployeeExist(const string& personName) const{
+Person* TaskManager::isEmployeeExist(const string& personName){
+    Person* currentEmployee = nullptr;
     for (int i = 0; i < numOfEmployees; i++){
         if (employees[i]->getName() == personName){
-            return employees[i];
+            currentEmployee = employees[i];
         }
     }
-    return nullptr;
+    return currentEmployee;
 }
 
 void TaskManager::assignTask(const string &personName, const Task &task){
-    Person* cuurentEmployee = isEmployeeExist(personName);
-    if(cuurentEmployee==nullptr){
+    Person* currentEmployee = isEmployeeExist(personName);
+    if(currentEmployee == nullptr){
         if(numOfEmployees == MAX_PERSONS){
             throw std::runtime_error("TaskManager::assignTask: you have reached the maximum number of employees");
         }
-        cuurentEmployee = new Person(personName);
-        employees[numOfEmployees++] = cuurentEmployee;
+        currentEmployee = new Person(personName);
+        employees[numOfEmployees++] = currentEmployee;
     }
-    cuurentEmployee->assignTask(task);
+    currentEmployee->assignTask(task);
 }
 
 void TaskManager::completeTask(const string &personName){
-    Person* cuurentEmployee = isEmployeeExist(personName);
-    if(cuurentEmployee == nullptr){
+    Person* currentEmployee = isEmployeeExist(personName);
+    if(currentEmployee == nullptr){
        return;
     }
     try
     {
-        cuurentEmployee->completeTask();
+        currentEmployee->completeTask();
     }
     catch (const std::runtime_error& e)
     {
@@ -44,9 +45,10 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
     }
     for(int i = 0; i < numOfEmployees; i++){
         SortedList<Task> oldTasks = this->employees[i]->getTasks();
-
         SortedList<Task> newTasks = oldTasks.apply([this, type, priority](SortedList<Task> task) { return setPriority(task, type, priority); });
+        this->employees[i]->setTasks(newTasks);
     }
+
 }
 
 SortedList<Task> TaskManager::setPriority(SortedList<Task> tasks, TaskType type, int priority){
