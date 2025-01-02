@@ -2,7 +2,7 @@
 #include "TaskManager.h"
 using namespace mtm;
 
-mtm::Person* mtm::TaskManager::isEmployeeExist(const string& personName) const{
+Person* TaskManager::isEmployeeExist(const string& personName) const{
     for (int i = 0; i < numOfEmployees; i++){
         if (employees[i]->getName() == personName){
             return employees[i];
@@ -11,7 +11,7 @@ mtm::Person* mtm::TaskManager::isEmployeeExist(const string& personName) const{
     return nullptr;
 }
 
-void mtm::TaskManager::assignTask(const string &personName, const Task &task){
+void TaskManager::assignTask(const string &personName, const Task &task){
     Person* cuurentEmployee = isEmployeeExist(personName);
     if(cuurentEmployee==nullptr){
         if(numOfEmployees == MAX_PERSONS){
@@ -23,7 +23,7 @@ void mtm::TaskManager::assignTask(const string &personName, const Task &task){
     cuurentEmployee->assignTask(task);
 }
 
-void mtm::TaskManager::completeTask(const string &personName){
+void TaskManager::completeTask(const string &personName){
     Person* cuurentEmployee = isEmployeeExist(personName);
     if(cuurentEmployee == nullptr){
        return;
@@ -37,3 +37,25 @@ void mtm::TaskManager::completeTask(const string &personName){
         std::cout << e.what() << std::endl;
     }
 }
+
+void TaskManager::bumpPriorityByType(TaskType type, int priority){
+    if(priority <= 0){
+        return;
+    }
+    for(int i = 0; i < numOfEmployees; i++){
+        SortedList<Task> oldTasks = this->employees[i]->getTasks();
+
+        SortedList<Task> newTasks = oldTasks.apply([this, type, priority](SortedList<Task> task) { return setPriority(task, type, priority); });
+    }
+}
+
+SortedList<Task> TaskManager::setPriority(SortedList<Task> tasks, TaskType type, int priority){
+    if(tasks.begin()->getType() == type){
+        SortedList<Task> resultTasks;
+        Task newTask = Task(tasks.begin()->getPriority() + priority, tasks.begin()->getType(), tasks.begin()->getDescription());
+        resultTasks.insert(newTask);
+        return resultTasks;
+    }
+    return tasks;
+}
+

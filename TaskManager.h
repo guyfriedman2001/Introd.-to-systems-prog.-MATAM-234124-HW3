@@ -17,9 +17,9 @@ private:
      */
     static const int MAX_PERSONS = 10;
     int numOfEmployees = 0;
-    mtm::Person* employees[MAX_PERSONS];
-
+    Person* employees[MAX_PERSONS];
     Person* isEmployeeExist(const string& personName) const;
+    SortedList<Task> setPriority(SortedList<Task> tasks, TaskType type, int priority);
 
     // Note - Additional private fields and methods can be added if needed.
 
