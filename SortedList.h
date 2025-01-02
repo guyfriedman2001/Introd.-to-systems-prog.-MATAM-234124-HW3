@@ -46,7 +46,7 @@ namespace mtm {
 
     public:
         SortedList() : length(0), head(nullptr), tail(nullptr) {}
-        SortedList(const SortedList& other) : length(other.length){
+        SortedList(const SortedList& other) : length(0){
             if(other.head == nullptr) {
                 this->head = nullptr;
                 this->tail = nullptr;
@@ -85,7 +85,7 @@ namespace mtm {
             }
             this->head = nullptr;
             this->tail = nullptr;
-            this->length = other.length;
+            this->length = 0;
             if(other.head == nullptr) {
                 return *this;
             }
@@ -136,6 +136,22 @@ namespace mtm {
             return this->length;
         }
         
+        void remove(ConstIterator& iter){
+            if(iter == this->end()) {
+                return;
+            }
+            if(iter == this->begin()) {
+                this->head = this->head->next;
+            }
+            else{
+                SortedListNode<T>* nextNode = iter->next;
+                SortedListNode<T>* prevNode = iter->prev;
+                prevNode->next = nextNode;
+                nextNode->prev = prevNode;
+            }
+            delete iter;
+            this->length--;
+        }
         /**
          *
          * the class should support the following public interface:
@@ -155,7 +171,7 @@ namespace mtm {
          * functions:
          * 8. insert - inserts a new element to the list V
          * 9. remove - removes an element from the list
-         * 10. length - returns the number of elements in the list
+         * 10. length - returns the number of elements in the list V
          * 11. filter - returns a new list with elements that satisfy a given condition
          * 12. apply - returns a new list with elements that were modified by an operation
          */
