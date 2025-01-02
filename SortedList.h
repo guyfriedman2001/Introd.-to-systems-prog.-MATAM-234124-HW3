@@ -24,7 +24,7 @@ namespace mtm {
                 this->next = newNode;
                 newNode->prev = this;
             }
-            SortedListNode() : prev(nullptr), next(nullptr), data(nullptr) {}
+            SortedListNode(SortedListNode<T>* prev = nullptr, SortedListNode<T>* next = nullptr, T* data = nullptr) : prev(prev), next(next), data(data) {}
             public:
             void add(T const& const data) {
                 if (data == nullptr) {
@@ -43,28 +43,15 @@ namespace mtm {
         int length;
         SortedListNode<T>* head;
         SortedListNode<T>* tail;
-        class SortedListNode { 
-        private:
-            T* data;
-            SortedListNode<T>* next;
-            SortedListNode<T>* previous;
-        public:
-            SortedListNode(T* data = nullptr, SortedListNode<T>* next = nullptr, SortedListNode<T>* previous = nullptr) : data(data), next(next), previous(previous) {}
-            ~SortedListNode() {
-                delete data;
-            }
-        };
-
 
     public:
         SortedList() : length(0), head(nullptr), tail(nullptr) {}
-
         SortedList(const SortedList& other) : length(other.length){
             SortedListNode<T>* currentOther = other.head;
             SortedListNode<T>* currentNode = this->head;
              SortedListNode<T>* previousNode = nullptr;
             while(currentOther != nullptr) {
-                currentNode = new SortedListNode<T>(currentOther->data, nullptr, previousNode);
+                currentNode = new SortedListNode<T>(previousNode, nullptr, currentOther->data);
                 if(previousNode == nullptr) {
                     this->head = currentNode;
                 }
@@ -94,7 +81,7 @@ namespace mtm {
             SortedListNode<T>* currentNode = this->head;
             SortedListNode<T>* previousNode = nullptr;
             while(currentOther != nullptr) {
-                currentNode = new SortedListNode<T>(currentOther->data, nullptr, previousNode);
+                currentNode = new SortedListNode<T>(previousNode, nullptr, currentOther->data);
                 if(previousNode == nullptr) {
                     this->head = currentNode;
                 }
