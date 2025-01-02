@@ -75,14 +75,49 @@ namespace mtm {
                 previousNode = currentNode;
                 currentOther = currentOther->next;
         }
+        }
+
+        SortedList& operator=(const SortedList& other) {
+            if(this == &other) {
+                return *this;
+            }
+            SortedListNode<T>* current = this->head;
+            while(current != nullptr) {
+                SortedListNode<T>* next = current->next;
+                delete current;
+                current = next;
+            }
+            this->head = nullptr;
+            this->tail = nullptr;
+            this->length = other.length;
+            SortedListNode<T>* currentOther = other.head;
+            SortedListNode<T>* currentNode = this->head;
+            SortedListNode<T>* previousNode = nullptr;
+            while(currentOther != nullptr) {
+                currentNode = new SortedListNode<T>(currentOther->data, nullptr, previousNode);
+                if(previousNode == nullptr) {
+                    this->head = currentNode;
+                }
+                if(previousNode != nullptr) {
+                    previousNode->next = currentNode;
+                }
+                this->tail = currentNode;
+                previousNode = currentNode;
+                currentOther = currentOther->next;
+            }
+            return *this;
+        }
+
+
+        
         /**
          *
          * the class should support the following public interface:
          * if needed, use =defualt / =delete
          *
          * constructors and destructor:
-         * 1. SortedList() - creates an empty list.
-         * 2. copy constructor
+         * 1. SortedList() - creates an empty list. V
+         * 2. copy constructor V
          * 3. operator= - assignment operator
          * 4. ~SortedList() - destructor
          *
@@ -120,5 +155,5 @@ namespace mtm {
      *
      */
     };
-}
-
+    }
+};
