@@ -34,10 +34,18 @@ namespace mtm {
                 SortedListNode<T> * newNode = new SortedListNode<T>(data);
                 this->add(newNode);
             }
+            SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
             ~SortedListNode() {
                 this->prev = nullptr;
                 this->next = nullptr;
                 delete this->data;
+            }
+
+            bool isSorted(){ //FIXME make it so the head itself wont call this function, because otherwise it would break the logic
+                if (this->next == nullptr){
+                    return true;
+                }
+                return (this >= this->next) && (this->next->isSorted()); //TODO create >= operator
             }
         };
         private:
@@ -57,13 +65,25 @@ namespace mtm {
             for (SortedListNode<T>* node : this){ //FIXME adjust to work correctly with the iterator
                 if (addThis > node){
                     node->addPrevious(addThis); //TODO add addprevious method to nodes
-                    break;
+                    return;
                 }
             }
         }
 
+        bool isSorted(){
+            if (this->isEmpty()){
+                return true;
+            }
+            return head->isSorted();
+        }
+
     public:
-        SortedList() : length(0), head(nullptr), tail(nullptr) {}
+        SortedList() : length(0){
+            this->head = new SortedListNode<T>();
+            this->tail = new SortedListNode<T>();
+            this->head->next = this->tail;
+            this->tail->prev = this->head;
+        }
         SortedList(const SortedList& other) : length(0){
             if(other.head == nullptr) {
                 this->head = nullptr;
@@ -90,6 +110,9 @@ namespace mtm {
             //     currentOther = currentOther->next;
         }
         
+        /**
+         * no need to keep such basic utility private
+         */
         inline bool isEmpty(){
             return this->length == 0;
         }
