@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 namespace mtm {
 
@@ -15,7 +16,7 @@ namespace mtm {
             SortedListNode<T> * next;
             T* data;
             void add(SortedListNode<T> * newNode) {
-                if (newNode <= this->next){ //TODO create > operator, make null node smallest;
+                if (newNode > this->next){ //TODO create > operator, make null node smallest;
                     this->next->add(newNode);
                     return;
                 }
@@ -44,6 +45,23 @@ namespace mtm {
         SortedListNode<T>* head;
         SortedListNode<T>* tail;
 
+        void addInitial(SortedListNode<T>* addThis){
+            assert(this->isEmpty());
+            this->head->add(addThis);
+        }
+
+        void add(SortedListNode<T>* addThis){
+            if(this->isEmpty()){
+                this->addInitial(addThis);
+            }
+            for (SortedListNode<T>* node : this){ //FIXME adjust to work correctly with the iterator
+                if (addThis > node){
+                    node->addPrevious(addThis); //TODO add addprevious method to nodes
+                    break;
+                }
+            }
+        }
+
     public:
         SortedList() : length(0), head(nullptr), tail(nullptr) {}
         SortedList(const SortedList& other) : length(0){
@@ -70,6 +88,10 @@ namespace mtm {
             //     this->tail = currentNode;
             //     previousNode = currentNode;
             //     currentOther = currentOther->next;
+        }
+        
+        inline bool isEmpty(){
+            return this->length == 0;
         }
 
         SortedList<T>& operator=(const SortedList& other) {
