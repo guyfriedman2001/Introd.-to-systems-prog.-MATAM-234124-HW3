@@ -138,7 +138,6 @@ namespace mtm {
          *
          */
 
-
         bool isSorted() const {
             if (this->isEmpty()){
                 return true;
@@ -164,20 +163,20 @@ namespace mtm {
 
     public:
 
-        SortedList<T>() : length(0){
+        SortedList() : length(0){
             this->head = new SortedListNode<T>();
             this->tail = new SortedListNode<T>();
             this->head->next = this->tail;
             this->tail->prev = this->head;
         }
 
-        SortedList<T>(const SortedList& other) : length(0){
+        SortedList(const SortedList& other) : length(0){
             this->head = new SortedListNode<T>();
             this->tail = new SortedListNode<T>();
             this->head->next = this->tail;
             this->tail->prev = this->head;
             if(other.head != nullptr){
-                for(SortedListNode<T> currentOther : other) { //TODO create iterator for SortedListNodes 
+                for(SortedList<T> currentOther : other) { //TODO create iterator for SortedListNodes 
                     this->insert(currentOther.data);
                 }
             }
@@ -187,18 +186,20 @@ namespace mtm {
             if(this == &other) {
                 return *this;
             }
-            
-            SortedListNode<T>* current = this->head->next;
-            while(current != this->tail) {
-                SortedListNode<T>* next = current->next;
-                delete current;
-                current = next;
+            for(SortedList<T> current : *this) {
+                this->remove(current);
             }
+            // SortedListNode<T>* current = this->head->next;
+            // while(current != this->tail) {
+            //     SortedListNode<T>* next = current->next;
+            //     delete current;
+            //     current = next;
+            // }
             this->length = 0;
             if(other.head == nullptr) {
                 return *this;
             }
-            for(SortedListNode<T> currentOther : other) { //TODO create iterator for SortedListNodes 
+            for(SortedList<T> currentOther : other) { //TODO create iterator for SortedListNodes 
                 this->insert(currentOther.data);
             }
             return *this;
@@ -307,27 +308,54 @@ namespace mtm {
          * 11. filter - returns a new list with elements that satisfy a given condition V?
          * 12. apply - returns a new list with elements that were modified by an operation V?
          */
-
+         class ConstIterator;
     };
 
     template <class T>
     class SortedList<T>::ConstIterator {
+        private:
+            friend class SortedList<T>;
+            SortedListNode<T>* current;
+            ConstIterator(SortedListNode<T>* current) : current(current) {}
+        public:
+            ConstIterator(ConstIterator& other) = default;
+            ConstIterator& operator=(const ConstIterator& other) = default;
+            ~ConstIterator() = default;
+            const T& operator*() const{
+                if(current == this->end()) {
+                    throw std::out_of_range("Iterator is out of range");
+                }
+                return *(current->data);
+            }
+            ConstIterator& operator++(){
+                if(current == this->end()){
+                    throw std::out_of_range("Iterator is out of range");                
+                }
+                current = current->next;
+                return *this;
+            }
+            bool operator!=(const ConstIterator& other) const{
+                return current != other.current;
+            }
+            bool operator>(const ConstIterator& other) const{
+                return current->data > other.current->data;
+            }
+
     /**
      * the class should support the following public interface:
      * if needed, use =defualt / =delete
      *
      * constructors and destructor:
-     * 1. a ctor(or ctors) your implementation needs
-     * 2. copy constructor
-     * 3. operator= - assignment operator
-     * 4. ~ConstIterator() - destructor
+     * 1. a ctor(or ctors) your implementation needs V?
+     * 2. copy constructor V?
+     * 3. operator= - assignment operator V?
+     * 4. ~ConstIterator() - destructor V?
      *
      * operators:
-     * 5. operator* - returns the element the iterator points to
-     * 6. operator++ - advances the iterator to the next element
-     * 7. operator!= - returns true if the iterator points to a different element
+     * 5. operator* - returns the element the iterator points to V?
+     * 6. operator++ - advances the iterator to the next element V?
+     * 7. operator!= - returns true if the iterator points to a different element V?
      *
      */
     };
-    }
 };
