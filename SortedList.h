@@ -383,13 +383,14 @@ namespace mtm {
             ConstIterator& operator=(const ConstIterator& other) = default;
             ~ConstIterator() = default;
             const T& operator*() const{
-                if(current == this->end()) {
+                assert(!current->isHead());
+                if(current->isTail()) {
                     throw std::out_of_range("Iterator is out of range");
                 }
                 return *(current->data);
             }
             ConstIterator& operator++(){
-                if(current == this->end()){
+                if(current->isTail()){
                     throw std::out_of_range("Iterator is out of range");                
                 }
                 current = current->next;
