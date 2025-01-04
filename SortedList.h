@@ -172,29 +172,15 @@ namespace mtm {
         }
 
         SortedList<T>(const SortedList& other) : length(0){
-            if(other.head == nullptr) {
-                this->head = nullptr;
-                this->tail = nullptr;
-                return;
+            this->head = new SortedListNode<T>();
+            this->tail = new SortedListNode<T>();
+            this->head->next = this->tail;
+            this->tail->prev = this->head;
+            if(other.head != nullptr){
+                for(SortedListNode<T> currentOther : other) { //TODO create iterator for SortedListNodes 
+                    this->insert(currentOther.data);
+                }
             }
-            for(SortedListNode<T> currentOther : other) { //TODO create iterator for SortedListNodes 
-                this->insert(currentOther.data);
-            }
-            
-            // SortedListNode<T>* currentOther = other.head;
-            // SortedListNode<T>* currentNode = this->head;
-            //  SortedListNode<T>* previousNode = nullptr;
-            // while(currentOther != nullptr) {
-            //     currentNode = new SortedListNode<T>(previousNode, nullptr, currentOther->data);
-            //     if(previousNode == nullptr) {
-            //         this->head = currentNode;
-            //     }
-            //     if(previousNode != nullptr) {
-            //         previousNode->next = currentNode;
-            //     }
-            //     this->tail = currentNode;
-            //     previousNode = currentNode;
-            //     currentOther = currentOther->next;
         }
 
         SortedList<T>& operator=(const SortedList& other) {
@@ -202,14 +188,12 @@ namespace mtm {
                 return *this;
             }
             
-            SortedListNode<T>* current = this->head;
-            while(current != nullptr) {
+            SortedListNode<T>* current = this->head->next;
+            while(current != this->tail) {
                 SortedListNode<T>* next = current->next;
                 delete current;
                 current = next;
             }
-            this->head = nullptr;
-            this->tail = nullptr;
             this->length = 0;
             if(other.head == nullptr) {
                 return *this;
@@ -217,21 +201,6 @@ namespace mtm {
             for(SortedListNode<T> currentOther : other) { //TODO create iterator for SortedListNodes 
                 this->insert(currentOther.data);
             }
-            // SortedListNode<T>* currentOther = other.head;
-            // SortedListNode<T>* currentNode = this->head;
-            // SortedListNode<T>* previousNode = nullptr;
-            // while(currentOther != nullptr) {
-            //     currentNode = new SortedListNode<T>(previousNode, nullptr, currentOther->data);
-            //     if(previousNode == nullptr) {
-            //         this->head = currentNode;
-            //     }
-            //     if(previousNode != nullptr) {
-            //         previousNode->next = currentNode;
-            //     }
-            //     this->tail = currentNode;
-            //     previousNode = currentNode;
-            //     currentOther = currentOther->next;
-            // }
             return *this;
         }
         ~SortedList() {
@@ -309,7 +278,7 @@ namespace mtm {
         }
 
         ConstIterator begin() const {
-            return ConstIterator(this->head);
+            return ConstIterator(this->head->next);
         }
 
         ConstIterator end() const {
