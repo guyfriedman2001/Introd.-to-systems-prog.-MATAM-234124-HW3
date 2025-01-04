@@ -43,17 +43,15 @@ namespace mtm {
                 delete this->data;
             }
 
-            inline bool isTail() const {
-                return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
+            void deleteNode() {
+                this->prev->next = this->next;
+                this->next->prev = this->prev;
+                this->next = nullptr;
+                this->prev = nullptr;
+                delete this;
             }
 
-            inline bool isHead() const {
-                return (this->data == nullptr)&&(this->next != nullptr)&&(this->prev == nullptr);
-            }
 
-            inline bool hasNext()   const {
-                return !(this->next->isTail());
-            }
 
             void addImmediate(SortedListNode<T>* newNode) {
                 assert(!this->isTail());
@@ -100,6 +98,19 @@ namespace mtm {
             }
 
         public:
+
+            inline bool isTail() const {
+                return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
+            }
+
+            inline bool isHead() const {
+                return (this->data == nullptr)&&(this->next != nullptr)&&(this->prev == nullptr);
+            }
+
+            inline bool hasNext()   const {
+                return !(this->next->isTail());
+            }
+
             void insert(T const& const data) {
                 if (data == nullptr) {
                     //TODO invalid argument
@@ -197,6 +208,15 @@ namespace mtm {
 
         inline bool isEmpty(){
             return this->listLength == 0;
+        }
+
+        void deleteNode(SortedListNode<T>* node) {
+            if (node == nullptr) {
+                return;
+            }
+            node->deleteNode();
+            --(this->listLength);
+            assert(this->isSorted());
         }
 
     public:
