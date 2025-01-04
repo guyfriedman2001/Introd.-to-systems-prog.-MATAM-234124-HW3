@@ -14,10 +14,10 @@ namespace mtm {
         //wrapping function provides flexibility with static like parameters such as
         //head and tail, without forcing a single instance of the list class.
         class SortedListNode;
-    private:
+        private:
         int listLength;
-        SortedListNode<T>* head;
-        SortedListNode<T>* tail;
+        SortedListNode* head;
+        SortedListNode* tail;
 
         /**
          * //maybe can delete this function
@@ -276,14 +276,14 @@ namespace mtm {
      */
     };
 
-    template <typename T>
+    template <class T>
     class SortedList<T>::SortedListNode {
             //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
         private:
             friend class SortedList<T>;
-            SortedListNode<T> * prev;
-            SortedListNode<T> * next;
+            SortedListNode * prev;
+            SortedListNode * next;
             T* data;
 
             SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
