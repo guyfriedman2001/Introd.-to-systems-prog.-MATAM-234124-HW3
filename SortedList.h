@@ -3,11 +3,14 @@
 #include <iostream>
 #include <stdexcept>
 #include <cassert>
+#include <functional>
 
 namespace mtm {
-
     template <typename T>
     class SortedList {
+        //class SortedListNode; //TODO fix dependencies
+        class ConstIterator;
+        class NodeIterator;
         //TODO maybe delete these comment lines
         //provides the de-facto interface for interacting with SortedListNode,
         //wrapping function provides flexibility with static like parameters such as
@@ -26,6 +29,12 @@ namespace mtm {
 
             SortedListNode(T data): prev(nullptr), next(nullptr) {
                 this->data = new T(data);
+            }
+
+            //FIXME might be redundant
+            SortedListNode(SortedListNode<T>* other) {
+                this();
+                this->data = new T(other->data);
             }
 
             ~SortedListNode() {
@@ -57,12 +66,14 @@ namespace mtm {
             void add(SortedListNode<T>* newNode) {
                 //if we arrived at the end of the chain
                 if (!this->hasNext()) {
+                    assert(this->next->isTail());
                     this->addImmediate(newNode);
                     assert(this->isSorted());
                     return;
                 }
                 //if we arrived at the orderly place of the new node
                 if (newNode > this->next) {
+                    assert(!this->next->isTail());
                     this->addImmediate(newNode);
                     assert(this->isSorted());
                     return;
@@ -107,9 +118,36 @@ namespace mtm {
                 //the head breaks the sorted logic, if it is the head- skip it.
                 return (this->isHead())?this->next->isSorted(0):this->isSorted(0);
             }
+
+            //FIXME CORRECT FOR SYNTAX
+            bool operator==(SortedListNode<T>* other) const {
+                return (this->data == other->data);
+            }
+
+            bool operator!=(SortedListNode<T>* other) const {
+                return !(*this == *other);
+            }
+
+            bool operator>(SortedListNode<T>* other) const {
+                return (this->data > other->data);
+            }
+
+            bool operator<(SortedListNode<T>* other) const {
+                bool equal = *this == *other;
+                bool greater = *this > *other;
+                return (!equal) && (!greater);
+            }
+
+            bool operator<=(SortedListNode<T>* other) const {
+                return !(*this > *other);
+            }
+
+            bool operator>=(const SortedListNode<T>* other) const {
+                return !(*this < *other);
+            }
         };
     private:
-        int length;
+        int listLength;
         SortedListNode<T>* head;
         SortedListNode<T>* tail;
 
@@ -150,7 +188,7 @@ namespace mtm {
             for (SortedListNode<T>* node : this) {
                 ++actualLength;
             }
-            return actualLength == this->length;
+            return actualLength == this->listLength;
         }
 
         bool verifyList() const {
@@ -158,19 +196,19 @@ namespace mtm {
         }
 
         inline bool isEmpty(){
-            return this->length == 0;
+            return this->listLength == 0;
         }
 
     public:
 
-        SortedList() : length(0){
+        SortedList<T>() : listLength(0){
             this->head = new SortedListNode<T>();
             this->tail = new SortedListNode<T>();
             this->head->next = this->tail;
             this->tail->prev = this->head;
         }
 
-        SortedList(const SortedList& other) : length(0){
+        SortedList<T>(const SortedList& other) : listLength(0){
             this->head = new SortedListNode<T>();
             this->tail = new SortedListNode<T>();
             this->head->next = this->tail;
@@ -186,6 +224,7 @@ namespace mtm {
             if(this == &other) {
                 return *this;
             }
+            
             for(SortedList<T> current : *this) {
                 this->remove(current);
             }
@@ -195,7 +234,7 @@ namespace mtm {
             //     delete current;
             //     current = next;
             // }
-            this->length = 0;
+           this->listLength = 0;
             if(other.head == nullptr) {
                 return *this;
             }
@@ -215,7 +254,7 @@ namespace mtm {
 
         void insert(const T& newElement) {
             this->head->insert(newElement);
-            ++this->length;
+            ++(this->listLength);
             assert(this->verifyList());
         }
 
@@ -238,8 +277,10 @@ namespace mtm {
 
 
         int length() const {
-            return this->length;
+            return this->listLength;
         }
+
+        //SortedList<T> filter(std::function<bool(T)> filterFunc) const {}
         
         void remove(ConstIterator<T>& iter){
             if(iter == this->end()) {
@@ -255,15 +296,15 @@ namespace mtm {
                 nextNode->prev = prevNode;
             }
             delete iter;
-            this->length--;
+            (this->listLength)--;
         }
 
         template <class Condition>
         SortedList<T> filter(Condition condition) const{
             SortedList<T> filteredList;
-            for(const SortedListNode<T>& current : *this){
-                if(condition(current.data)) {
-                    filteredList.insert(current.data);
+            for(T& val : this){
+                if(condition(val)) {
+                    filteredList.insert(val);
                 }
             }
             return filteredList;
@@ -272,8 +313,8 @@ namespace mtm {
         template <class Function>
         SortedList<T> apply(Function function) const{
             SortedList<T> appliedList;
-            for(const SortedListNode<T>& current : *this){
-                appliedList.insert((function(current)).data);
+            for(T& val : this){
+                appliedList.insert(function(val));
             }
             return appliedList;
         }
@@ -357,5 +398,64 @@ namespace mtm {
      * 7. operator!= - returns true if the iterator points to a different element V?
      *
      */
+    };
+
+    template <class T>
+    class SortedList<T>::NodeIterator {
+        /**
+         * the class should support the following public interface:
+         * if needed, use =defualt / =delete
+         *
+         * constructors and destructor:
+         * 1. a ctor(or ctors) your implementation needs
+         * 2. copy constructor
+         * 3. operator= - assignment operator
+         * 4. ~ConstIterator() - destructor
+         *
+         * operators:
+         * 5. operator* - returns the element the iterator points to
+         * 6. operator++ - advances the iterator to the next element
+         * 7. operator!= - returns true if the iterator points to a different element
+         *
+         */
+        private:
+        SortedListNode<T>* current;
+        int index;
+        public:
+
+        NodeIterator() = delete;
+
+        NodeIterator(SortedListNode<T>* current) : current(current) {}
+
+        bool operator==(const NodeIterator& other) const {
+            return this->current == other.current;
+        }
+
+        bool operator!=(const NodeIterator& other) const {
+            return !(this == other);
+        }
+
+        bool operator<(const NodeIterator& other) const {
+            return this->index < other.index;
+        }
+
+        bool operator>(const NodeIterator& other) const {
+            return (this != other) && (!(this < other));
+        }
+
+        bool operator<=(const NodeIterator& other) const {
+            return !(*this > other);
+        }
+
+        bool operator>=(const NodeIterator& other) const {
+            return !(*this < other);
+        }
+
+        T operator*() const {
+            return this->current;
+        }
+
+
+
     };
 };
