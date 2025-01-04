@@ -13,148 +13,7 @@ namespace mtm {
         //provides the de-facto interface for interacting with SortedListNode,
         //wrapping function provides flexibility with static like parameters such as
         //head and tail, without forcing a single instance of the list class.
-        template <typename T>
-        class SortedListNode {
-            //TODO maybe delete these comment lines
-            //the members of this class are only accessible by SortedList class
-        private:
-            friend class SortedList<T>;
-            SortedListNode<T> * prev;
-            SortedListNode<T> * next;
-            T* data;
-
-            SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
-
-            SortedListNode(T data): prev(nullptr), next(nullptr) {
-                this->data = new T(data);
-            }
-
-            //FIXME might be redundant
-            SortedListNode(SortedListNode<T>* other) {
-                this();
-                this->data = new T(other->data);
-            }
-
-            ~SortedListNode() {
-                this->prev = nullptr;
-                this->next = nullptr;
-                delete this->data;
-            }
-
-            void deleteNode() {
-                this->prev->next = this->next;
-                this->next->prev = this->prev;
-                this->next = nullptr;
-                this->prev = nullptr;
-                delete this;
-            }
-
-
-
-            void addImmediate(SortedListNode<T>* newNode) {
-                assert(!this->isTail());
-                this->next->prev = newNode;
-                newNode->next = this->next;
-                this->next = newNode;
-                newNode->prev = this;
-            }
-
-            void add(SortedListNode<T>* newNode) {
-                //if we arrived at the end of the chain
-                if (!this->hasNext()) {
-                    assert(this->next->isTail());
-                    this->addImmediate(newNode);
-                    assert(this->isSorted());
-                    return;
-                }
-                //if we arrived at the orderly place of the new node
-                if (newNode > this->next) {
-                    assert(!this->next->isTail());
-                    this->addImmediate(newNode);
-                    assert(this->isSorted());
-                    return;
-                }
-                //if we are yet to find the place for the new node nor did we arrive to the end of the chain
-                this->next->add(newNode);
-                assert(this->isSorted());
-            }
-
-            SortedListNode(SortedListNode<T>* prev = nullptr, SortedListNode<T>* next = nullptr, T* data = nullptr) :
-            prev(prev), next(next), data(data) {}
-
-            /**
-             * overload of the isSorted function, to differentiate calls between
-             * the head and the rest of the chain
-             *
-             * @return if the list is sorted
-             */
-            bool isSorted(int) const {
-                if (this->isTail()){
-                    return true;
-                }
-                return (this >= this->next) && (this->next->isSorted(0)); //TODO create >= operator or < and use (!(this < this->next))
-            }
-
-        public:
-
-            inline bool isTail() const {
-                return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
-            }
-
-            inline bool isHead() const {
-                return (this->data == nullptr)&&(this->next != nullptr)&&(this->prev == nullptr);
-            }
-
-            inline bool hasNext()   const {
-                return !(this->next->isTail());
-            }
-
-            void insert(T const& const data) {
-                if (data == nullptr) {
-                    //TODO invalid argument
-                }
-                SortedListNode<T> * newNode = new SortedListNode<T>(data);
-                this->add(newNode);
-                assert(this->isSorted());
-            }
-
-            /**
-             *check if the list is sorted
-             *
-             * @return if the list is sorted
-             */
-            bool isSorted() const {
-                //the head breaks the sorted logic, if it is the head- skip it.
-                return (this->isHead())?this->next->isSorted(0):this->isSorted(0);
-            }
-
-            //FIXME CORRECT FOR SYNTAX
-            bool operator==(SortedListNode<T>* other) const {
-                return (this->data == other->data);
-            }
-
-            bool operator!=(SortedListNode<T>* other) const {
-                return !(*this == *other);
-            }
-
-            bool operator>(SortedListNode<T>* other) const {
-                return (this->data > other->data);
-            }
-
-            bool operator<(SortedListNode<T>* other) const {
-                bool equal = *this == *other;
-                bool greater = *this > *other;
-                return (!equal) && (!greater);
-            }
-
-            bool operator<=(SortedListNode<T>* other) const {
-                return !(*this > *other);
-            }
-
-            bool operator>=(const SortedListNode<T>* other) const {
-                return !(*this < *other);
-            }
-        };
+        class SortedListNode;
     private:
         int listLength;
         SortedListNode<T>* head;
@@ -419,6 +278,147 @@ namespace mtm {
      *
      */
     };
+
+    template <typename T>
+    class SortedListNode {
+            //TODO maybe delete these comment lines
+            //the members of this class are only accessible by SortedList class
+        private:
+            friend class SortedList<T>;
+            SortedListNode<T> * prev;
+            SortedListNode<T> * next;
+            T* data;
+
+            SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
+
+            SortedListNode(T data): prev(nullptr), next(nullptr) {
+                this->data = new T(data);
+            }
+
+            //FIXME might be redundant
+            SortedListNode(SortedListNode<T>* other) {
+                this();
+                this->data = new T(other->data);
+            }
+
+            ~SortedListNode() {
+                this->prev = nullptr;
+                this->next = nullptr;
+                delete this->data;
+            }
+
+            void deleteNode() {
+                this->prev->next = this->next;
+                this->next->prev = this->prev;
+                this->next = nullptr;
+                this->prev = nullptr;
+                delete this;
+            }
+
+            void addImmediate(SortedListNode<T>* newNode) {
+                assert(!this->isTail());
+                this->next->prev = newNode;
+                newNode->next = this->next;
+                this->next = newNode;
+                newNode->prev = this;
+            }
+
+            void add(SortedListNode<T>* newNode) {
+                //if we arrived at the end of the chain
+                if (!this->hasNext()) {
+                    assert(this->next->isTail());
+                    this->addImmediate(newNode);
+                    assert(this->isSorted());
+                    return;
+                }
+                //if we arrived at the orderly place of the new node
+                if (newNode > this->next) {
+                    assert(!this->next->isTail());
+                    this->addImmediate(newNode);
+                    assert(this->isSorted());
+                    return;
+                }
+                //if we are yet to find the place for the new node nor did we arrive to the end of the chain
+                this->next->add(newNode);
+                assert(this->isSorted());
+            }
+
+            SortedListNode(SortedListNode<T>* prev = nullptr, SortedListNode<T>* next = nullptr, T* data = nullptr) :
+            prev(prev), next(next), data(data) {}
+
+            /**
+             * overload of the isSorted function, to differentiate calls between
+             * the head and the rest of the chain
+             *
+             * @return if the list is sorted
+             */
+            bool isSorted(int) const {
+                if (this->isTail()){
+                    return true;
+                }
+                return (this >= this->next) && (this->next->isSorted(0)); //TODO create >= operator or < and use (!(this < this->next))
+            }
+
+        public:
+
+            inline bool isTail() const {
+                return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
+            }
+
+            inline bool isHead() const {
+                return (this->data == nullptr)&&(this->next != nullptr)&&(this->prev == nullptr);
+            }
+
+            inline bool hasNext()   const {
+                return !(this->next->isTail());
+            }
+
+            void insert(T const& const data) {
+                if (data == nullptr) {
+                    //TODO invalid argument
+                }
+                SortedListNode<T> * newNode = new SortedListNode<T>(data);
+                this->add(newNode);
+                assert(this->isSorted());
+            }
+
+            /**
+             *check if the list is sorted
+             *
+             * @return if the list is sorted
+             */
+            bool isSorted() const {
+                //the head breaks the sorted logic, if it is the head- skip it.
+                return (this->isHead())?this->next->isSorted(0):this->isSorted(0);
+            }
+
+            //FIXME CORRECT FOR SYNTAX
+            bool operator==(SortedListNode<T>* other) const {
+                return (this->data == other->data);
+            }
+
+            bool operator!=(SortedListNode<T>* other) const {
+                return !(*this == *other);
+            }
+
+            bool operator>(SortedListNode<T>* other) const {
+                return (this->data > other->data);
+            }
+
+            bool operator<(SortedListNode<T>* other) const {
+                bool equal = *this == *other;
+                bool greater = *this > *other;
+                return (!equal) && (!greater);
+            }
+
+            bool operator<=(SortedListNode<T>* other) const {
+                return !(*this > *other);
+            }
+
+            bool operator>=(const SortedListNode<T>* other) const {
+                return !(*this < *other);
+            }
+        };
 
     template <class T>
     class SortedList<T>::NodeIterator {
