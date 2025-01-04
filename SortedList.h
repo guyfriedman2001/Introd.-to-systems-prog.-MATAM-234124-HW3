@@ -99,9 +99,9 @@ namespace mtm {
             return *this;
         }
         ~SortedList() {
-            SortedListNode<T>* current = this->head;
+            SortedListNode* current = this->head;
             while(current != nullptr) {
-                SortedListNode<T>* next = current->next;
+                SortedListNode* next = current->next;
                 delete current;
                 current = next;
             }
@@ -145,8 +145,8 @@ namespace mtm {
                 this->head = this->head->next;
             }
             else{
-                SortedListNode<T>* nextNode = iter->next;
-                SortedListNode<T>* prevNode = iter->prev;
+                SortedListNode* nextNode = iter->next;
+                SortedListNode* prevNode = iter->prev;
                 prevNode->next = nextNode;
                 nextNode->prev = prevNode;
             }
