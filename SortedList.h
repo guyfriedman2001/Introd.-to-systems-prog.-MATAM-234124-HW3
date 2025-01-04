@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <functional>
+#include <new>
 
 namespace mtm {
     template <typename T>
@@ -18,31 +19,6 @@ namespace mtm {
         int listLength;
         SortedListNode* head;
         SortedListNode* tail;
-
-        /**
-         * //maybe can delete this function
-        void addInitial(SortedListNode<T>* addThis){
-            assert(this->isEmpty());
-            this->head->add(addThis);
-        }
-         */
-
-
-        /** //maybe can delete this function
-        void add(SortedListNode<T>* addThis){
-            if(this->isEmpty()){
-                this->head->addImmediate(addThis);
-                return;
-            }
-            for (SortedListNode<T>* node : this){ //FIXME adjust to work correctly with the iterator
-                if (addThis > node){
-                    node->addPrevious(addThis); //TODO add addprevious method to nodes
-                    return;
-                }
-            }
-        }
-         *
-         */
 
         bool isSorted() const {
             if (this->isEmpty()){
@@ -73,7 +49,7 @@ namespace mtm {
             }
             node->deleteNode();
             --(this->listLength);
-            assert(this->isSorted());
+            assert(this->verifyList());
         }
 
     public:
@@ -81,19 +57,22 @@ namespace mtm {
         class ConstIterator;
 
         SortedList<T>() : listLength(0){
-            this->head = new SortedListNode<T>();
-            this->tail = new SortedListNode<T>();
+            try {
+                this->head = new SortedListNode<T>();
+                this->tail = new SortedListNode<T>();
+            } catch (std::bad_alloc& e) {
+                delete this->head;
+                delete this->tail;
+            }
             this->head->next = this->tail;
             this->tail->prev = this->head;
         }
 
-        SortedList<T>(const SortedList& other){
-            this();
-            if(other.head != nullptr){
-                for(T& currentData : other) { //TODO create iterator for SortedListNodes
-                    this->insert(currentData);
-                }
+        SortedList<T>(const SortedList& other): SortedList(){
+            for(T& currentData : other) {
+                this->insert(currentData);
             }
+            assert(this->verifyList());
         }
 
         SortedList<T>& operator=(const SortedList& other) {
@@ -374,7 +353,7 @@ namespace mtm {
                 if (data == nullptr) {
                     //TODO invalid argument
                 }
-                SortedListNode<T> * newNode = new SortedListNode<T>(data);
+                SortedListNode * newNode = new SortedListNode(data);
                 this->add(newNode);
                 assert(this->isSorted());
             }
