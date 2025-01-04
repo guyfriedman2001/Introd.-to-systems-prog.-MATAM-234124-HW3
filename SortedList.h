@@ -43,7 +43,7 @@ namespace mtm {
             return this->listLength == 0;
         }
 
-        void deleteNode(SortedListNode<T>* node) {
+        void deleteNode(SortedListNode* node) {
             if (node == nullptr) {
                 return;
             }
@@ -56,10 +56,10 @@ namespace mtm {
         class NodeIterator;
         class ConstIterator;
 
-        SortedList<T>() : listLength(0){
+        SortedList<T>() : listLength(0), head(nullptr), tail(nullptr) {
             try {
-                this->head = new SortedListNode<T>();
-                this->tail = new SortedListNode<T>();
+                this->head = new SortedListNode();
+                this->tail = new SortedListNode();
             } catch (std::bad_alloc& e) {
                 delete this->head;
                 delete this->tail;
@@ -98,6 +98,7 @@ namespace mtm {
             }
             return *this;
         }
+
         ~SortedList() {
             SortedListNode* current = this->head;
             while(current != nullptr) {
@@ -137,7 +138,7 @@ namespace mtm {
 
         //SortedList<T> filter(std::function<bool(T)> filterFunc) const {}
         
-        void remove(ConstIterator<T>& iter){
+        void remove(ConstIterator& iter){
             if(iter == this->end()) {
                 return;
             }
@@ -150,8 +151,8 @@ namespace mtm {
                 prevNode->next = nextNode;
                 nextNode->prev = prevNode;
             }
-            delete iter;
-            (this->listLength)--;
+            //delete iter;
+            --(this->listLength);
         }
 
         template <class Condition>
@@ -210,8 +211,8 @@ namespace mtm {
     class SortedList<T>::ConstIterator {
         private:
             friend class SortedList<T>;
-            SortedListNode<T>* current;
-            ConstIterator(SortedListNode<T>* current) : current(current) {}
+            SortedListNode* current;
+            ConstIterator(SortedListNode* current) : current(current) {}
         public:
             ConstIterator(ConstIterator& other) = default;
             ConstIterator& operator=(const ConstIterator& other) = default;
@@ -267,15 +268,16 @@ namespace mtm {
 
             SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
 
-            SortedListNode(T data): prev(nullptr), next(nullptr) {
-                this->data = new T(data);
+            SortedListNode(T& data): SortedListNode() {
+                try {
+                    this->data = new T(data);
+                } catch (std::bad_alloc& e) {
+                    delete this;
+                }
             }
 
             //FIXME might be redundant
-            SortedListNode(SortedListNode<T>* other) {
-                this();
-                this->data = new T(other->data);
-            }
+            SortedListNode(SortedListNode* other) : SortedListNode(other->data) {}
 
             ~SortedListNode() {
                 this->prev = nullptr;
@@ -291,7 +293,7 @@ namespace mtm {
                 delete this;
             }
 
-            void addImmediate(SortedListNode<T>* newNode) {
+            void addImmediate(SortedListNode* newNode) {
                 assert(!this->isTail());
                 this->next->prev = newNode;
                 newNode->next = this->next;
@@ -299,7 +301,7 @@ namespace mtm {
                 newNode->prev = this;
             }
 
-            void add(SortedListNode<T>* newNode) {
+            void add(SortedListNode* newNode) {
                 //if we arrived at the end of the chain
                 if (!this->hasNext()) {
                     assert(this->next->isTail());
@@ -319,7 +321,7 @@ namespace mtm {
                 assert(this->isSorted());
             }
 
-            SortedListNode(SortedListNode<T>* prev = nullptr, SortedListNode<T>* next = nullptr, T* data = nullptr) :
+            SortedListNode(SortedListNode* prev = nullptr, SortedListNode* next = nullptr, T* data = nullptr) :
             prev(prev), next(next), data(data) {}
 
             /**
@@ -349,7 +351,7 @@ namespace mtm {
                 return !(this->next->isTail());
             }
 
-            void insert(T const& const data) {
+            void insert(T const& data) {
                 if (data == nullptr) {
                     //TODO invalid argument
                 }
@@ -369,29 +371,29 @@ namespace mtm {
             }
 
             //FIXME CORRECT FOR SYNTAX
-            bool operator==(SortedListNode<T>* other) const {
+            bool operator==(SortedListNode* other) const {
                 return (this->data == other->data);
             }
 
-            bool operator!=(SortedListNode<T>* other) const {
+            bool operator!=(SortedListNode* other) const {
                 return !(*this == *other);
             }
 
-            bool operator>(SortedListNode<T>* other) const {
+            bool operator>(SortedListNode* other) const {
                 return (this->data > other->data);
             }
 
-            bool operator<(SortedListNode<T>* other) const {
+            bool operator<(SortedListNode* other) const {
                 bool equal = *this == *other;
                 bool greater = *this > *other;
                 return (!equal) && (!greater);
             }
 
-            bool operator<=(SortedListNode<T>* other) const {
+            bool operator<=(SortedListNode* other) const {
                 return !(*this > *other);
             }
 
-            bool operator>=(const SortedListNode<T>* other) const {
+            bool operator>=(const SortedListNode* other) const {
                 return !(*this < *other);
             }
         };
@@ -415,13 +417,13 @@ namespace mtm {
          *
          */
         private:
-        SortedListNode<T>* current;
+        SortedListNode* current;
         int index;
         public:
 
         NodeIterator() = delete;
 
-        NodeIterator(SortedListNode<T>* current) : current(current) {}
+        NodeIterator(SortedListNode* current) : current(current) {}
 
         bool operator==(const NodeIterator& other) const {
             return this->current == other.current;
