@@ -53,7 +53,7 @@ namespace mtm {
 
         bool verifyLength() const {
             int actualLength = 0;
-            for (SortedListNode<T>* node : this) {
+            for (T& data : this) {
                 ++actualLength;
             }
             return actualLength == this->listLength;
