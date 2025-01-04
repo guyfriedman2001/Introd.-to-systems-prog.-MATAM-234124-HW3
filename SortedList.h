@@ -280,7 +280,7 @@ namespace mtm {
     };
 
     template <typename T>
-    class SortedListNode {
+    class SortedList<T>::SortedListNode {
             //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
         private:
