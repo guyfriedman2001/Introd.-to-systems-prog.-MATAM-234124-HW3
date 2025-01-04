@@ -24,7 +24,7 @@ void TaskManager::assignTask(const string &personName, const Task &task){
         employees[numOfEmployees++] = currentEmployee;
     }
     Task newTask(task.getPriority(), task.getType(), task.getDescription());
-    newTask.setId(++idCounter);
+    newTask.setId(idCounter++);
     currentEmployee->assignTask(newTask);
 }
 
@@ -36,11 +36,21 @@ void TaskManager::completeTask(const string &personName){
     try
     {
         currentEmployee->completeTask();
+        
     }
     catch (const std::runtime_error& e)
     {
         std::cout << e.what() << std::endl;
     }
+}
+
+Task TaskManager::setPriority(Task tasks, TaskType type, int priority){
+    if(tasks.getType() == type){
+        Task resultTasks(tasks.getPriority() + priority, tasks.getType(), tasks.getDescription());
+        resultTasks.setId(tasks.getId());
+        return resultTasks;
+    }
+    return tasks;
 }
 
 void TaskManager::bumpPriorityByType(TaskType type, int priority){
@@ -55,19 +65,10 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
 
 }
 
-Task TaskManager::setPriority(Task tasks, TaskType type, int priority){
-    if(tasks.getType() == type){
-        Task resultTasks(tasks.getPriority() + priority, tasks.getType(), tasks.getDescription());
-        resultTasks.setId(tasks.getId());
-        return resultTasks;
-    }
-    return tasks;
-}
 
 void TaskManager::printAllEmployees() const{
     for(int i = 0; i < numOfEmployees; i++){
         std::cout << *employees[i] << std::endl;
-        std::cout << std::endl;
     }
 }
 
@@ -81,8 +82,8 @@ void TaskManager::printAllTasks() const{
 
 void TaskManager::printTasksByType(TaskType type) const{
     SortedList<Task> allTasks = getAllEmployeesTasks();
-    SortedList<Task> tasksByType = allTasks.filter([type]( Task task) { return (task.getType() == type);});
-    for(const Task& currentTask : tasksByType){
+    SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
+    for(auto currentTask : tasksByType){
         std::cout << currentTask << std::endl;
     }
     std::cout << std::endl;
