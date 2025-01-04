@@ -313,7 +313,7 @@ namespace mtm {
         }
 
         ConstIterator end() const {
-            return ConstIterator(nullptr);
+            return ConstIterator(this->tail);
         }
         /**
          *
