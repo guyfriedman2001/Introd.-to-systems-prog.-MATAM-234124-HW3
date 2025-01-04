@@ -44,7 +44,7 @@ void TaskManager::completeTask(const string &personName){
     }
 }
 
-Task TaskManager::setPriority(Task tasks, TaskType type, int priority){
+const Task TaskManager::setPriority(const Task& tasks, TaskType type, int priority){
     if(tasks.getType() == type){
         Task resultTasks(tasks.getPriority() + priority, tasks.getType(), tasks.getDescription());
         resultTasks.setId(tasks.getId());
