@@ -182,6 +182,7 @@ namespace mtm {
         }
 
         void deleteNode(SortedListNode* node) {
+        void deleteNode(SortedListNode* node) {
             if (node == nullptr) {
                 return;
             }
@@ -252,6 +253,7 @@ namespace mtm {
             }
             return *this;
         }
+
         ~SortedList() {
             SortedListNode* current = this->head;
             while(current != nullptr) {
@@ -311,7 +313,7 @@ namespace mtm {
 
         //SortedList<T> filter(std::function<bool(T)> filterFunc) const {}
         
-        void remove(ConstIterator iter){
+        void remove(ConstIterator& iter){
             if(iter == this->end()) {
                 return;
             }
@@ -324,8 +326,8 @@ namespace mtm {
                 prevNode->next = nextNode;
                 nextNode->prev = prevNode;
             }
-            delete iter.current;
-            (this->listLength)--;
+            //delete iter;
+            --(this->listLength);
         }
         
         template <class Condition>
@@ -430,62 +432,59 @@ namespace mtm {
     };
 
 
-    // template <class T>
-    // class SortedList<T>::NodeIterator {
-    //     /**
-    //      * the class should support the following public interface:
-    //      * if needed, use =defualt / =delete
-    //      *
-    //      * constructors and destructor:
-    //      * 1. a ctor(or ctors) your implementation needs
-    //      * 2. copy constructor
-    //      * 3. operator= - assignment operator
-    //      * 4. ~ConstIterator() - destructor
-    //      *
-    //      * operators:
-    //      * 5. operator* - returns the element the iterator points to
-    //      * 6. operator++ - advances the iterator to the next element
-    //      * 7. operator!= - returns true if the iterator points to a different element
-    //      *
-    //      */
-    //     private:
-    //     SortedListNode<T>* current;
-    //     int index;
-    //     public:
+     template <class T>
+    class SortedList<T>::NodeIterator {
+        /**
+         * the class should support the following public interface:
+         * if needed, use =defualt / =delete
+         *
+         * constructors and destructor:
+         * 1. a ctor(or ctors) your implementation needs
+         * 2. copy constructor
+         * 3. operator= - assignment operator
+         * 4. ~ConstIterator() - destructor
+         *
+         * operators:
+         * 5. operator* - returns the element the iterator points to
+         * 6. operator++ - advances the iterator to the next element
+         * 7. operator!= - returns true if the iterator points to a different element
+         *
+         */
+        private:
+        SortedListNode* current;
+        int index;
+        public:
 
-    //     NodeIterator() = delete;
+        NodeIterator() = delete;
+        NodeIterator(SortedListNode* current) : current(current) {}
 
-    //     NodeIterator(SortedListNode<T>* current) : current(current) {}
+        bool operator==(const NodeIterator& other) const {
+            return this->current == other.current;
+        }
 
-    //     bool operator==(const NodeIterator& other) const {
-    //         return this->current == other.current;
-    //     }
+        bool operator!=(const NodeIterator& other) const {
+            return !(this == other);
+        }
 
-    //     bool operator!=(const NodeIterator& other) const {
-    //         return !(this == other);
-    //     }
+        bool operator<(const NodeIterator& other) const {
+            return this->index < other.index;
+        }
 
-    //     bool operator<(const NodeIterator& other) const {
-    //         return this->index < other.index;
-    //     }
+        bool operator>(const NodeIterator& other) const {
+            return (this != other) && (!(this < other));
+        }
 
-    //     bool operator>(const NodeIterator& other) const {
-    //         return (this != other) && (!(this < other));
-    //     }
+        bool operator<=(const NodeIterator& other) const {
+            return !(*this > other);
+        }
 
-    //     bool operator<=(const NodeIterator& other) const {
-    //         return !(*this > other);
-    //     }
+        bool operator>=(const NodeIterator& other) const {
+            return !(*this < other);
+        }
 
-    //     bool operator>=(const NodeIterator& other) const {
-    //         return !(*this < other);
-    //     }
+        T operator*() const {
+            return this->current;
+        }
 
-    //     T operator*() const {
-    //         return this->current;
-    //     }
-
-
-
-    // };
+    };
 };
