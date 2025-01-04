@@ -87,14 +87,11 @@ namespace mtm {
             this->tail->prev = this->head;
         }
 
-        SortedList<T>(const SortedList& other) : listLength(0){
-            this->head = new SortedListNode<T>();
-            this->tail = new SortedListNode<T>();
-            this->head->next = this->tail;
-            this->tail->prev = this->head;
+        SortedList<T>(const SortedList& other){
+            this();
             if(other.head != nullptr){
-                for(SortedList<T> currentOther : other) { //TODO create iterator for SortedListNodes 
-                    this->insert(currentOther.data);
+                for(T& currentData : other) { //TODO create iterator for SortedListNodes
+                    this->insert(currentData);
                 }
             }
         }
@@ -117,8 +114,8 @@ namespace mtm {
             if(other.head == nullptr) {
                 return *this;
             }
-            for(SortedList<T> currentOther : other) { //TODO create iterator for SortedListNodes 
-                this->insert(currentOther.data);
+            for(T& currentData : other) { //TODO create iterator for SortedListNodes
+                this->insert(currentData);
             }
             return *this;
         }
