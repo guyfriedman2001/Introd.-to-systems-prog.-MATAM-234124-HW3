@@ -9,8 +9,6 @@ namespace mtm {
     template <typename T>
     class SortedList {
         //class SortedListNode; //TODO fix dependencies
-        class ConstIterator;
-        class NodeIterator;
         //TODO maybe delete these comment lines
         //provides the de-facto interface for interacting with SortedListNode,
         //wrapping function provides flexibility with static like parameters such as
@@ -220,6 +218,8 @@ namespace mtm {
         }
 
     public:
+        class NodeIterator;
+        class ConstIterator;
 
         SortedList<T>() : listLength(0){
             this->head = new SortedListNode<T>();
@@ -369,7 +369,6 @@ namespace mtm {
          * 11. filter - returns a new list with elements that satisfy a given condition V?
          * 12. apply - returns a new list with elements that were modified by an operation V?
          */
-         class ConstIterator;
     };
 
     template <class T>
