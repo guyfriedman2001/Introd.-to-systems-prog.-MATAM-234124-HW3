@@ -20,7 +20,7 @@ private:
     int numOfEmployees = 0;
     Person* employees[MAX_PERSONS];
     Person* isEmployeeExist(const string& personName);
-    SortedList<Task> setPriority(SortedList<Task> tasks, TaskType type, int priority);
+    Task setPriority(Task tasks, TaskType type, int priority);
     SortedList<Task> getAllEmployeesTasks() const;
 
     // Note - Additional private fields and methods can be added if needed.
