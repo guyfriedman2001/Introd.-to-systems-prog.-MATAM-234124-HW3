@@ -14,6 +14,7 @@ namespace mtm {
         //provides the de-facto interface for interacting with SortedListNode,
         //wrapping function provides flexibility with static like parameters such as
         //head and tail, without forcing a single instance of the list class.
+        class ConstIterator;
         class SortedListNode {
             //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
@@ -158,8 +159,12 @@ namespace mtm {
         SortedListNode* head;
         SortedListNode* tail;
 
+        bool isEmpty() const{
+            return (this->listLength == 0);
+        }
+
         bool isSorted() const {
-            if (this->isEmpty()){
+            if ((this->isEmpty())){
                 return true;
             }
             return head->isSorted();
@@ -167,7 +172,7 @@ namespace mtm {
 
         bool verifyLength() const {
             int actualLength = 0;
-            for (T& data : this) {
+            for(const T& data : *this) {
                 ++actualLength;
             }
             return actualLength == this->listLength;
@@ -177,9 +182,6 @@ namespace mtm {
             return (this->isSorted())&&(this->verifyLength());
         }
 
-        inline bool isEmpty(){
-            return this->listLength == 0;
-        }
 
         void deleteNode(SortedListNode* node) {
             if (node == nullptr) {
@@ -192,7 +194,7 @@ namespace mtm {
 
         public:
         //class NodeIterator;
-        class ConstIterator;
+        //class ConstIterator;
 
         ConstIterator begin() const {
             return ConstIterator(this->head->next);
