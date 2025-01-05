@@ -31,7 +31,7 @@ public:
      *
      * Note - you may add =default if needed.
      */
-    TaskManager() : idCounter(0), numOfEmployees(0) {};
+    TaskManager();
 
     /**
      * @brief Deleted copy constructor to prevent copying of TaskManager objects.
