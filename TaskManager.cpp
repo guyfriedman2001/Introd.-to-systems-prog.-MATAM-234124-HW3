@@ -2,7 +2,7 @@
 #include "TaskManager.h"
 using namespace mtm;
 
-int TaskManager::idCounter = 0;
+TaskManager::TaskManager() : idCounter(0), numOfEmployees(0){}
 
 Person* TaskManager::isEmployeeExist(const string& personName){
     Person* currentEmployee = nullptr;

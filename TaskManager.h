@@ -16,8 +16,8 @@ private:
      * @brief Maximum number of persons the TaskManager can handle.
      */
     static const int MAX_PERSONS = 10;
-    static int idCounter;
-    int numOfEmployees = 0;
+    int idCounter;
+    int numOfEmployees;
     Person* employees[MAX_PERSONS];
     Person* isEmployeeExist(const string& personName);
     const Task setPriority(const Task& tasks, TaskType type, int priority);
@@ -31,7 +31,7 @@ public:
      *
      * Note - you may add =default if needed.
      */
-    TaskManager() = default;
+    TaskManager() : idCounter(0), numOfEmployees(0) {};
 
     /**
      * @brief Deleted copy constructor to prevent copying of TaskManager objects.
