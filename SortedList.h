@@ -15,6 +15,7 @@ namespace mtm {
         //wrapping function provides flexibility with static like parameters such as
         //head and tail, without forcing a single instance of the list class.
         class ConstIterator;
+        //class Iterator;
         class SortedListNode {
             //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
@@ -31,8 +32,7 @@ namespace mtm {
             }
 
             //FIXME might be redundant
-            SortedListNode(SortedListNode* other) {
-                this();
+            SortedListNode(SortedListNode* other) : SortedListNode() {
                 this->data = new T(other->data);
             }
 
@@ -204,6 +204,16 @@ namespace mtm {
             return ConstIterator(this->tail);
         }
 
+        /**
+        ConstIterator begin() {
+            return ConstIterator(this->head->next);
+        }
+
+        ConstIterator end() {
+            return ConstIterator(this->tail);
+        }
+        */
+
         SortedList() : listLength(0){
             try {
                 this->head = new SortedListNode();
@@ -314,7 +324,7 @@ namespace mtm {
 
         //SortedList<T> filter(std::function<bool(T)> filterFunc) const {}
         
-        void remove(ConstIterator iter){
+        void remove(const ConstIterator& iter){
             if(iter == this->end()) {
                 return;
             }
@@ -379,13 +389,15 @@ namespace mtm {
     class SortedList<T>::ConstIterator {
         private:
             friend class SortedList<T>;
-            SortedListNode* current;
-            ConstIterator(SortedListNode* current) : current(current) {}
+            const SortedListNode* current;
+            ConstIterator(const SortedListNode* current) : current(current) {}
         public:
-            ConstIterator(ConstIterator& other) = default;
+            ConstIterator(const ConstIterator& other) {
+                this->current = other.current;
+            }
             ConstIterator& operator=(const ConstIterator& other) = default;
             ~ConstIterator() = default;
-            const T& operator*() const{
+            T& operator*() const{
                 assert(!current->isHead());
                 if(current->isTail()) {
                     throw std::out_of_range("Iterator is out of range");
