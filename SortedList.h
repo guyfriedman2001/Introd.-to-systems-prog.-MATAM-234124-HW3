@@ -67,7 +67,7 @@ namespace mtm {
                     return;
                 }
                 //if we arrived at the orderly place of the new node
-                if (newNode < this->next) {
+                if (newNode > this->next) {
                     assert(!this->next->isTail());
                     this->addImmediate(newNode);
                     assert(this->isSorted());
