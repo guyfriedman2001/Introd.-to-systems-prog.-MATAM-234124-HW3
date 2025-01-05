@@ -17,7 +17,7 @@ namespace mtm {
         class ConstIterator;
         //class Iterator;
         class SortedListNode {
-            //TODO maybe delete these comment lines
+        //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
         private:
             friend class SortedList<T>;
@@ -139,6 +139,15 @@ namespace mtm {
             bool operator>(SortedListNode* other) const {
                 return (this->data > other->data);
             }
+
+            friend bool operator>(const SortedListNode& lhs, const SortedListNode& rhs) {
+                assert(!lhs.isHead());
+                if (rhs.isTail()) {
+                    return true;
+                }
+                return (lhs.data > rhs.data);
+            }
+
 
             bool operator<(SortedListNode* other) const {
                 bool equal = *this == *other;
