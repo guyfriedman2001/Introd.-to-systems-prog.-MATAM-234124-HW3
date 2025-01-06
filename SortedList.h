@@ -27,7 +27,7 @@ namespace mtm {
 
             SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
 
-            SortedListNode(T data): prev(nullptr), next(nullptr) {
+            SortedListNode(T data): SortedListNode() {
                 this->data = new T(data);
             }
 
@@ -43,6 +43,7 @@ namespace mtm {
             }
 
             void deleteNode() {
+                assert(!(this->isTail()||this->isHead()));
                 this->prev->next = this->next;
                 this->next->prev = this->prev;
                 this->next = nullptr;
@@ -345,22 +346,42 @@ namespace mtm {
         }
 
         //SortedList<T> filter(std::function<bool(T)> filterFunc) const {}
-        
+
+        /**
         void remove(const ConstIterator& iter){
             if(iter == this->end()) {
                 return;
             }
-            if(iter == this->begin()) {
-                this->head = this->head->next;
+            ConstIterator& begin = this->begin();
+            if(iter == begin) {
+                this->head->next->deleteNode(); //FIXME this line
             }
             else{
-                SortedListNode* nextNode = iter.current->next;
+                SortedListNode* nextNode = iter.current->next; //TODO understand what this code does
                 SortedListNode* prevNode = iter.current->prev;
                 prevNode->next = nextNode;
                 nextNode->prev = prevNode;
             }
             //delete iter;
             --(this->listLength);
+        }
+         */
+
+        void remove(const ConstIterator& iter){
+            ConstIterator last = this->end();
+            if(iter == last) {
+                return;
+            }
+            SortedListNode* current = this->head->next;
+            ConstIterator curr = this->begin();
+            while(curr != last) {
+                if(curr == iter) {
+                    current->deleteNode();
+                    --(this->listLength);
+                }
+                curr++;
+                current = current->next;
+            }
         }
         
         template <class Condition>
@@ -467,59 +488,4 @@ namespace mtm {
     };
 
 
-    // template <class T>
-    // class SortedList<T>::NodeIterator {
-    //     /**
-    //      * the class should support the following public interface:
-    //      * if needed, use =defualt / =delete
-    //      *
-    //      * constructors and destructor:
-    //      * 1. a ctor(or ctors) your implementation needs
-    //      * 2. copy constructor
-    //      * 3. operator= - assignment operator
-    //      * 4. ~ConstIterator() - destructor
-    //      *
-    //      * operators:
-    //      * 5. operator* - returns the element the iterator points to
-    //      * 6. operator++ - advances the iterator to the next element
-    //      * 7. operator!= - returns true if the iterator points to a different element
-    //      *
-    //      */
-    //     private:
-    //     SortedListNode* current;
-    //     int index;
-    //     public:
-
-    //     NodeIterator() = delete;
-    //     NodeIterator(SortedListNode* current) : current(current) {}
-
-    //     bool operator==(const NodeIterator& other) const {
-    //         return this->current == other.current;
-    //     }
-
-    //     bool operator!=(const NodeIterator& other) const {
-    //         return !(this == other);
-    //     }
-
-    //     bool operator<(const NodeIterator& other) const {
-    //         return this->index < other.index;
-    //     }
-
-    //     bool operator>(const NodeIterator& other) const {
-    //         return (this != other) && (!(this < other));
-    //     }
-
-    //     bool operator<=(const NodeIterator& other) const {
-    //         return !(*this > other);
-    //     }
-
-    //     bool operator>=(const NodeIterator& other) const {
-    //         return !(*this < other);
-    //     }
-
-    //     T operator*() const {
-    //         return this->current;
-    //     }
-
-    // };
 };
