@@ -67,10 +67,10 @@ namespace mtm {
                     return;
                 }
                 //if we arrived at the orderly place of the new node
-                if (newNode > this->next) {
+                if (*(newNode->data) > *(this->next->data)) { //fixme
                     assert(!this->next->isTail());
                     this->addImmediate(newNode);
-                    assert(this->isSorted());
+                    //assert(this->isSorted());//todo attempt to reduce assertion calls to help see the actual bug
                     return;
                 }
                 //if we are yet to find the place for the new node nor did we arrive to the end of the chain
@@ -88,10 +88,10 @@ namespace mtm {
              * @return if the list is sorted
              */
             bool isSorted(int) const {
-                if (this->isTail()){
+                if (this->isTail()||(!(this->hasNext()))){
                     return true;
                 }
-                return (this >= this->next) && (this->next->isSorted(0)); //TODO create >= operator or < and use (!(this < this->next))
+                return (!((*(this->next->data)) > (*(this->data)))) && (this->next->isSorted(0)); //TODO create >= operator or < and use (!(this < this->next))
             }
 
         public:
@@ -236,6 +236,19 @@ namespace mtm {
         }
 
         SortedList(const SortedList<T>& other): SortedList<T>(){
+            /*
+             try {
+                this->head = new SortedListNode();
+                this->tail = new SortedListNode();
+            } catch (std::bad_alloc& e) {
+                delete this->head;
+                delete this->tail;
+            }
+            this->head->next = this->tail;
+            this->tail->prev = this->head;
+            this->listLength = 0;
+            */
+
             for(const T& currentData : other) {
                 this->insert(currentData);
             }
