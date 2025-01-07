@@ -26,18 +26,6 @@ namespace mtm {
                 }
             }
 
-            //FIXME might be redundant
-            /**
-            SortedListNode(SortedListNode* other) : SortedListNode() {
-                try{
-                    this->data = new T(*(other->data));
-                } catch (std::bad_alloc& e) {
-                    delete this;
-                    throw;
-                }
-            }
-            */
-
             void deleteNode() {
                 this->prev->next = this->next;
                 this->next->prev = this->prev;
@@ -118,7 +106,6 @@ namespace mtm {
                 return (lhs.data > rhs.data);
             }
 
-
             bool operator<(SortedListNode* other) const {
                 bool equal = *this == *other;
                 bool greater = *this > *other;
@@ -147,17 +134,17 @@ namespace mtm {
             --(this->listLength);
         }
 
-        template <typename V> //FIXME if new assignment operator is not used, then no need for this function
-        void swap(V address1, V address2) {
+        template <typename V> 
+        void swap(V& address1, V& address2) {
             V temp = address1;
             address1 = address2;
             address2 = temp;
         }
 
         void swapList(SortedList& other) {
-            Swap<SortedListNode*>(this->head, other.head);
-            Swap<SortedListNode*>(this->tail, other.tail);
-            Swap<int>(this->listLength, other.listLength);
+            swap<SortedListNode*>(this->head, other.head);
+            swap<SortedListNode*>(this->tail, other.tail);
+            swap<int>(this->listLength, other.listLength);
         }
 
         public:
@@ -203,19 +190,6 @@ namespace mtm {
          * @param other The SortedList instance to copy.
          */
         SortedList(const SortedList<T>& other): SortedList<T>(){
-            /*
-             try {
-                this->head = new SortedListNode();
-                this->tail = new SortedListNode();
-            } catch (std::bad_alloc& e) {
-                delete this->head;
-                delete this->tail;
-            }
-            this->head->next = this->tail;
-            this->tail->prev = this->head;
-            this->listLength = 0;
-            */
-
             for(const T& currentData : other) {
                 try{
                     this->insert(currentData);
@@ -235,54 +209,9 @@ namespace mtm {
             if(this == &other) {
                 return *this;
             }
-            
-            // for(ConstIterator iter : *this) {
-            //     this->remove(*iter);
-            // }
-            /**
-             SortedListNode* oldHead = this->head;
-             SortedListNode* oldTail = this->tail;
-             int oldLength = this->listLength;
-             try{
-                SortedList* tempOther = new SortedList(other);
-                this->head = tempOther->head;
-                this->tail = tempOther->tail;
-                this->listLength = tempOther->listLength;
-                tempOther->head = nullptr;
-                tempOther->tail = nullptr;
-                delete tempOther;
-            } 
-            catch (std::bad_alloc& e) {
-                this->head = oldHead;
-                this->tail = oldTail;
-                this->listLength = oldLength;
-                throw;
-            }
-            while(oldHead != nullptr) {
-                SortedListNode* nextNode = oldHead->next;
-                delete oldHead;
-                oldHead = nextNode;
-            }
-            */
             SortedList<T> temp = SortedList(other);
             this->swapList(temp);
             return *this;
-            /**
-             *FIXME
-             *
-             *maybe better implementation for this:
-             *
-            *
-            if(this == &other) {
-                return *this;
-            }
-            sortedList<T> temp = sortedList(other);
-            this->swapList(temp);
-            delete temp;
-            return *this;
-
-             *
-             */
         }
 
         /**
@@ -332,15 +261,12 @@ namespace mtm {
                 return;
             }
             SortedListNode* current = this->head->next;
-            ConstIterator curr = this->begin();
-            while(curr != last) {
+            for(ConstIterator curr = begin(); curr!= last; ++curr, current = current->next){
                 if(!(curr != iter)) {
                     current->deleteNode();
                     --(this->listLength);
                     return;
                 }
-                ++curr;
-                current = current->next;
             }
         }
 
@@ -388,29 +314,6 @@ namespace mtm {
             }
             return appliedList;
         }
-        /**
-         *
-         * the class should support the following public interface:
-         * if needed, use =defualt / =delete
-         *
-         * constructors and destructor:
-         * 1. SortedList() - creates an empty list. V
-         * 2. copy constructor V
-         * 3. operator= - assignment operator V
-         * 4. ~SortedList() - destructor V
-         *
-         * iterator:
-         * 5. class ConstIterator;
-         * 6. begin method V?
-         * 7. end method V?
-         *
-         * functions:
-         * 8. insert - inserts a new element to the list V
-         * 9. remove - removes an element from the list V
-         * 10. length - returns the number of elements in the list V
-         * 11. filter - returns a new list with elements that satisfy a given condition V?
-         * 12. apply - returns a new list with elements that were modified by an operation V?
-         */
     };
 
     template <class T>
@@ -426,9 +329,8 @@ namespace mtm {
             *
             * @param other The ConstIterator instance to copy.
             */
-            ConstIterator(const ConstIterator& other) {
-                this->current = other.current;
-            }
+            ConstIterator(const ConstIterator& other) = default;
+
 
             /**
              * @brief Assignment operator for the ConstIterator class.
@@ -477,23 +379,5 @@ namespace mtm {
             bool operator!=(const ConstIterator& other) const{
                 return current != other.current;
             }
-    /**
-     * the class should support the following public interface:
-     * if needed, use =defualt / =delete
-     *
-     * constructors and destructor:
-     * 1. a ctor(or ctors) your implementation needs V?
-     * 2. copy constructor V?
-     * 3. operator= - assignment operator V?
-     * 4. ~ConstIterator() - destructor V?
-     *
-     * operators:
-     * 5. operator* - returns the element the iterator points to V?
-     * 6. operator++ - advances the iterator to the next element V?
-     * 7. operator!= - returns true if the iterator points to a different element V?
-     *
-     */
     };
-
-
 };
