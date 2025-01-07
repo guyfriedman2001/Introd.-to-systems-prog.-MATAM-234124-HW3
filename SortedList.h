@@ -264,9 +264,8 @@ namespace mtm {
                 oldHead = nextNode;
             }
             */
-            SortedList<T> temp = new SortedList(other);
+            SortedList<T> temp = SortedList(other);
             this->swapList(temp);
-            delete temp;
             return *this;
             /**
              *FIXME
