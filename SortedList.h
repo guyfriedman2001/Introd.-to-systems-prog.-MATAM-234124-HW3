@@ -348,7 +348,7 @@ namespace mtm {
             * @return T& A reference to the element.
             * @throws std::out_of_range If the iterator is out of range.
             */
-            T& operator*() const{
+            const T& operator*() const{
                 if(current->isTail()) {
                     throw std::out_of_range("Iterator is out of range");
                 }
