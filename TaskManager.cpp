@@ -75,7 +75,7 @@ void TaskManager::printAllEmployees() const{
 
 void TaskManager::printAllTasks() const{
     SortedList<Task> allTasks = getAllEmployeesTasks();
-    for(auto currentTask : allTasks){
+    for(Task currentTask : allTasks){
         std::cout << currentTask << std::endl;
     }
 }
@@ -83,7 +83,7 @@ void TaskManager::printAllTasks() const{
 void TaskManager::printTasksByType(TaskType type) const{
     SortedList<Task> allTasks = getAllEmployeesTasks();
     SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
-    for(auto currentTask : tasksByType){
+    for(Task currentTask : tasksByType){
         std::cout << currentTask << std::endl;
     }
    
@@ -92,7 +92,7 @@ SortedList<Task> TaskManager::getAllEmployeesTasks() const{
     SortedList<Task> allTasks;
     for(int i = 0; i < this->numOfEmployees; i++){
         SortedList<Task> tasks(this->employees[i].getTasks());
-        for(auto currentTask : tasks){
+        for(Task currentTask : tasks){
             allTasks.insert(currentTask);
         }
     }
