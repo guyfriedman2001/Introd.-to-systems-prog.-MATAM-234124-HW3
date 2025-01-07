@@ -4,7 +4,6 @@
 #include "Task.h"
 #include "SortedList.h"
 #include "Person.h"
-using namespace mtm;
 
 
 /**

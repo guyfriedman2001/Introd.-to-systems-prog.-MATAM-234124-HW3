@@ -1,6 +1,5 @@
 #include <iostream>
 #include "TaskManager.h"
-using namespace mtm;
 #define NOT_FOUND -1
 TaskManager::TaskManager() : idCounter(0), numOfEmployees(0){}
 
@@ -64,8 +63,13 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
     }
     for(int i = 0; i < numOfEmployees; i++){
         SortedList<Task> oldTasks = this->employees[i].getTasks();
-        SortedList<Task> newTasks = oldTasks.apply([type, priority](Task task){ return setPriority(task, type, priority); });
-        this->employees[i].setTasks(newTasks);
+        try{
+            SortedList<Task> newTasks = oldTasks.apply([type, priority](Task task){ return setPriority(task, type, priority); });
+             this->employees[i].setTasks(newTasks);
+        }
+        catch (std::bad_alloc& e){
+            throw;
+        } 
     }
 
 }
@@ -87,9 +91,14 @@ void TaskManager::printAllTasks() const{
 
 void TaskManager::printTasksByType(TaskType type) const{
     SortedList<Task> allTasks = getAllEmployeesTasks();
-    SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
-    printTasks(tasksByType);
-   
+    try{
+        SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
+        printTasks(tasksByType);
+    }
+    catch (std::bad_alloc& e){
+        throw;
+    }
+    
 }
 SortedList<Task> TaskManager::getAllEmployeesTasks() const{
     SortedList<Task> allTasks;
