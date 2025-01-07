@@ -60,7 +60,7 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
     }
     for(int i = 0; i < numOfEmployees; i++){
         SortedList<Task> oldTasks = this->employees[i].getTasks();
-        SortedList<Task> newTasks = oldTasks.apply([this, type, priority](Task task){ return setPriority(task, type, priority); });
+        SortedList<Task> newTasks = oldTasks.apply([type, priority](Task task){ return setPriority(task, type, priority); });
         this->employees[i].setTasks(newTasks);
     }
 
