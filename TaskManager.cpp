@@ -24,9 +24,14 @@ void TaskManager::assignTask(const string &personName, const Task &task){
         currentEmployee = numOfEmployees;
         employees[numOfEmployees++] = newEmployee;
     }
-    Task newTask(task.getPriority(), task.getType(), task.getDescription());
-    newTask.setId(idCounter++);
-    employees[currentEmployee].assignTask(newTask);
+    try{
+        Task newTask(task.getPriority(), task.getType(), task.getDescription());
+        newTask.setId(idCounter++);
+        employees[currentEmployee].assignTask(newTask);
+    }
+    catch (std::bad_alloc& e){
+        throw;
+    }
 }
 
 void TaskManager::completeTask(const string &personName){
