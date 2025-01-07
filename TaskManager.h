@@ -21,6 +21,7 @@ private:
     Person employees[MAX_PERSONS];
     int isEmployeeExist(const string& personName);
     static const Task setPriority(const Task& tasks, TaskType type, int priority);
+    static void printTasks(const SortedList<Task>& tasks);
     SortedList<Task> getAllEmployeesTasks() const;
 
     // Note - Additional private fields and methods can be added if needed.
