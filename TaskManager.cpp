@@ -37,11 +37,11 @@ void TaskManager::completeTask(const string &personName){
     try
     {
         employees[currentEmployee].completeTask();
-        
     }
     catch (const std::runtime_error& e)
     {
-        std::cout << e.what() << std::endl;
+        throw(e);
+        //std::cout << e.what() << std::endl;
     }
 }
 
@@ -60,7 +60,7 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
     }
     for(int i = 0; i < numOfEmployees; i++){
         SortedList<Task> oldTasks = this->employees[i].getTasks();
-        SortedList<Task> newTasks = oldTasks.apply([this, type, priority](Task task) { return setPriority(task, type, priority); });
+        SortedList<Task> newTasks = oldTasks.apply([this, type, priority](Task task){ return setPriority(task, type, priority); });
         this->employees[i].setTasks(newTasks);
     }
 
@@ -69,7 +69,7 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
 
 void TaskManager::printAllEmployees() const{
     for(int i = 0; i < numOfEmployees; i++){
-        std::cout << employees[i] << std::endl;
+        std::cout << employees[i] << std::endl;        
     }
 }
 
@@ -78,7 +78,6 @@ void TaskManager::printAllTasks() const{
     for(auto currentTask : allTasks){
         std::cout << currentTask << std::endl;
     }
-    std::cout << std::endl;
 }
 
 void TaskManager::printTasksByType(TaskType type) const{
@@ -87,7 +86,6 @@ void TaskManager::printTasksByType(TaskType type) const{
     for(auto currentTask : tasksByType){
         std::cout << currentTask << std::endl;
     }
-    std::cout << std::endl;
    
 }
 SortedList<Task> TaskManager::getAllEmployeesTasks() const{
