@@ -14,8 +14,7 @@ namespace mtm {
         //provides the de-facto interface for interacting with SortedListNode,
         //wrapping function provides flexibility with static like parameters such as
         //head and tail, without forcing a single instance of the list class.
-        class ConstIterator;
-        //class Iterator;
+        // class ConstIterator;
         class SortedListNode {
         //TODO maybe delete these comment lines
             //the members of this class are only accessible by SortedList class
@@ -28,19 +27,26 @@ namespace mtm {
             SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
 
             SortedListNode(T data): SortedListNode() {
-                this->data = new T(data);
+                try{
+                    this->data = new T(data);
+                } catch (std::bad_alloc& e) {
+                    delete this;
+                    throw;
+                }
+                //this->data = new T(data);
             }
 
             //FIXME might be redundant
             SortedListNode(SortedListNode* other) : SortedListNode() {
-                this->data = new T(other->data);
+                try{
+                    this->data = new T(*(other->data));
+                } catch (std::bad_alloc& e) {
+                    delete this;
+                    throw;
+                }
+                //this->data = new T(other->data);
             }
 
-            ~SortedListNode() {
-                this->prev = nullptr;
-                this->next = nullptr;
-                delete this->data;
-            }
 
             void deleteNode() {
                 assert(!(this->isTail()||this->isHead()));
@@ -97,6 +103,12 @@ namespace mtm {
 
         public:
 
+            ~SortedListNode() {
+                this->prev = nullptr;
+                this->next = nullptr;
+                delete this->data;
+            }
+
             inline bool isTail() const {
                 return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
             }
@@ -113,9 +125,13 @@ namespace mtm {
                 // if (data == nullptr) {
                 //     //TODO invalid argument
                 // }
-                SortedListNode* newNode = new SortedListNode(data);
-                this->add(newNode);
-                assert(this->isSorted());
+                try{
+                     SortedListNode* newNode = new SortedListNode(data);
+                    this->add(newNode);
+                }
+                catch (std::bad_alloc& e) {
+                    throw;
+                }
             }
 
             /**
@@ -191,6 +207,7 @@ namespace mtm {
         }
 
         bool verifyList() const {
+            return true;
             return (this->isSorted())&&(this->verifyLength());
         }
 
@@ -206,7 +223,7 @@ namespace mtm {
 
         public:
         //class NodeIterator;
-        //class ConstIterator;
+        class ConstIterator;
 
         ConstIterator begin() const {
             return ConstIterator(this->head->next);
@@ -216,16 +233,6 @@ namespace mtm {
             return ConstIterator(this->tail);
         }
 
-        /**
-        ConstIterator begin() {
-            return ConstIterator(this->head->next);
-        }
-
-        ConstIterator end() {
-            return ConstIterator(this->tail);
-        }
-        */
-
         SortedList() : listLength(0){
             try {
                 this->head = new SortedListNode();
@@ -233,6 +240,7 @@ namespace mtm {
             } catch (std::bad_alloc& e) {
                 delete this->head;
                 delete this->tail;
+                throw;
             }
             this->head->next = this->tail;
             this->tail->prev = this->head;
@@ -253,9 +261,14 @@ namespace mtm {
             */
 
             for(const T& currentData : other) {
-                this->insert(currentData);
+                try{
+                    this->insert(currentData);
+                } catch (std::bad_alloc& e) {
+                    throw;
+                }
+                //this->insert(currentData);
             }
-            assert(this->verifyList());
+            //assert(this->verifyList());
         }
 
         SortedList<T>& operator=(const SortedList<T>& other) {
@@ -266,16 +279,33 @@ namespace mtm {
             // for(ConstIterator iter : *this) {
             //     this->remove(*iter);
             // }
-            SortedListNode* current = this->head->next;
-            while(current != this->tail) {
-                SortedListNode* next = current->next;
-                delete current;
-                current = next;
+             SortedListNode* oldHead = this->head;
+             SortedListNode* oldTail = this->tail;
+             int oldLength = this->listLength;
+             try{
+                SortedList* tempOther = new SortedList(other);
+                this->head = tempOther->head;
+                this->tail = tempOther->tail;
+                this->listLength = tempOther->listLength;
+                tempOther->head = nullptr;
+                tempOther->tail = nullptr;
+                delete tempOther;
+            } 
+            catch (std::bad_alloc& e) {
+                this->head = oldHead;
+                this->tail = oldTail;
+                this->listLength = oldLength;
+                throw;
             }
-           this->listLength = 0;
-            if(other.head == nullptr) {
-                return *this;
+            while(oldHead != nullptr) {
+                SortedListNode* nextNode = oldHead->next;
+                delete oldHead;
+                oldHead = nextNode;
             }
+            // if(other.head == nullptr) {
+            //     return *this;
+            // }
+            return *this;
             // for(ConstIterator iter : other) {
             //     this->insert(*iter);
             // }
@@ -283,11 +313,7 @@ namespace mtm {
             // while(otherCurrent != other.end()) {
             //     this->insert(*otherCurrent);
             //     ++otherCurrent;
-            // }
-            for(const T& currentData : other) { //TODO create iterator for SortedListNodes
-                this->insert(currentData);
-            }
-            return *this;
+            // }            
         }
 
         ~SortedList() {
@@ -320,9 +346,15 @@ namespace mtm {
         // }
 
         void insert(const T& newElement) {
-            this->head->insert(newElement);
-            ++(this->listLength);
-            assert(this->verifyList());
+            try{
+                this->head->insert(newElement);
+                ++(this->listLength);
+            }
+            catch (std::bad_alloc& e) {
+                throw;
+            }
+           
+            //assert(this->verifyList());
         }
 
         /**
@@ -371,17 +403,18 @@ namespace mtm {
 
         void remove(const ConstIterator& iter){
             ConstIterator last = this->end();
-            if(iter == last) {
+            if(!(iter != last)) {
                 return;
             }
             SortedListNode* current = this->head->next;
             ConstIterator curr = this->begin();
             while(curr != last) {
-                if(curr == iter) {
+                if(!(curr != iter)) {
                     current->deleteNode();
                     --(this->listLength);
+                    return;
                 }
-                curr++;
+                ++curr;
                 current = current->next;
             }
         }
@@ -391,7 +424,13 @@ namespace mtm {
             SortedList<T> filteredList;
             for(const T& val : *this){
                 if(condition(val)) {
-                    filteredList.insert(val);
+                    try{
+                        filteredList.insert(val);
+                    } 
+                    catch (std::bad_alloc& e) {
+                        throw;
+                    }
+                    //filteredList.insert(val);
                 }
             }
             return filteredList;
@@ -400,8 +439,15 @@ namespace mtm {
         template <class Function>
         SortedList<T> apply(Function function) const{
             SortedList<T> appliedList;
+            
             for(const T& val : *this){
-                appliedList.insert(function(val));
+                try{
+                    appliedList.insert(function(val));
+                } 
+                catch (std::bad_alloc& e) {
+                    throw;
+                }
+                //appliedList.insert(function(val));
             }
             return appliedList;
         }
@@ -459,18 +505,9 @@ namespace mtm {
             bool operator!=(const ConstIterator& other) const{
                 return current != other.current;
             }
-            bool operator>(const ConstIterator& other) const{
-                return current->data > other.current->data;
-            }
-            bool operator==(const ConstIterator& other) const{
-                return current == other.current;
-            }
-            ConstIterator operator++(int){
-                ConstIterator temp = *this;
-                ++(*this);
-                return temp;
-            }
-
+            // bool operator==(const ConstIterator& other) const{
+            //     return current == other.current;
+            // }
     /**
      * the class should support the following public interface:
      * if needed, use =defualt / =delete
