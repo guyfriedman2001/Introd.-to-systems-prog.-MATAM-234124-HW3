@@ -8,16 +8,8 @@
 namespace mtm {
     template <typename T>
     class SortedList {
-        //class SortedListNode; //TODO fix dependencies
-        //TODO maybe delete these comment lines
-        //provides the de-facto interface for interacting with SortedListNode,
-        //wrapping function provides flexibility with static like parameters such as
-        //head and tail, without forcing a single instance of the list class.
-        // class ConstIterator;
         class SortedListNode {
-        //TODO maybe delete these comment lines
-            //the members of this class are only accessible by SortedList class
-        private:
+            /* Inner class, part of implementation so no documentation is provided. */
             friend class SortedList<T>;
             SortedListNode* prev;
             SortedListNode* next;
@@ -35,6 +27,7 @@ namespace mtm {
             }
 
             //FIXME might be redundant
+            /**
             SortedListNode(SortedListNode* other) : SortedListNode() {
                 try{
                     this->data = new T(*(other->data));
@@ -43,7 +36,7 @@ namespace mtm {
                     throw;
                 }
             }
-
+            */
 
             void deleteNode() {
                 this->prev->next = this->next;
@@ -67,7 +60,7 @@ namespace mtm {
                     return;
                 }
                 //if we arrived at the orderly place of the new node
-                if (*(newNode->data) > *(this->next->data)) { //fixme
+                if (*(newNode->data) > *(this->next->data)) {
                     this->addImmediate(newNode);
                     return;
                 }
@@ -96,9 +89,6 @@ namespace mtm {
             }
 
             void insert(const T& data) {
-                // if (data == nullptr) {
-                //     //TODO invalid argument
-                // }
                 try{
                      SortedListNode* newNode = new SortedListNode(data);
                     this->add(newNode);
@@ -143,6 +133,7 @@ namespace mtm {
                 return !(*this < *other);
             }
         };
+
         private:
         int listLength;
         SortedListNode* head;
@@ -156,18 +147,43 @@ namespace mtm {
             --(this->listLength);
         }
 
+        template <typename V> //FIXME if new assignment operator is not used, then no need for this function
+        void swap(V address1, V address2) {
+            V temp = address1;
+            address1 = address2;
+            address2 = temp;
+        }
+
+        void swapList(SortedList& other) {
+            Swap<SortedListNode*>(this->head, other.head);
+            Swap<SortedListNode*>(this->tail, other.tail);
+            Swap<int>(this->listLength, other.listLength);
+        }
+
         public:
-        //class NodeIterator;
         class ConstIterator;
 
+        /**
+         * @brief Retrieves an iterator to the first element of the sorted list.
+         *
+         * @return ConstIterator, An iterator pointing to the first element.
+         */
         ConstIterator begin() const {
             return ConstIterator(this->head->next);
         }
 
+        /**
+         * @brief Retrieves an iterator one element after the last.
+         *
+         * @return ConstIterator, An iterator pointing past the last element.
+         */
         ConstIterator end() const {
             return ConstIterator(this->tail);
         }
 
+        /**
+         * @brief Constructor for the SortedList class. Initializes an empty sorted list.
+         */
         SortedList() : listLength(0){
             try {
                 this->head = new SortedListNode();
@@ -181,6 +197,11 @@ namespace mtm {
             this->tail->prev = this->head;
         }
 
+        /**
+         * @brief Copy constructor for the SortedList class.
+         *
+         * @param other The SortedList instance to copy.
+         */
         SortedList(const SortedList<T>& other): SortedList<T>(){
             /*
              try {
@@ -204,6 +225,12 @@ namespace mtm {
             }
         }
 
+        /**
+         * @brief Assignment operator for the SortedList class.
+         *
+         * @param other The SortedList instance to assign.
+         * @return SortedList<T>& A reference to the assigned SortedList instance.
+         */
         SortedList<T>& operator=(const SortedList<T>& other) {
             if(this == &other) {
                 return *this;
@@ -212,6 +239,7 @@ namespace mtm {
             // for(ConstIterator iter : *this) {
             //     this->remove(*iter);
             // }
+            /**
              SortedListNode* oldHead = this->head;
              SortedListNode* oldTail = this->tail;
              int oldLength = this->listLength;
@@ -235,17 +263,32 @@ namespace mtm {
                 delete oldHead;
                 oldHead = nextNode;
             }
+            */
+            SortedList<T> temp = new SortedList(other);
+            this->swapList(temp);
+            delete temp;
             return *this;
-            // for(ConstIterator iter : other) {
-            //     this->insert(*iter);
-            // }
-            // ConstIterator otherCurrent = other.begin();
-            // while(otherCurrent != other.end()) {
-            //     this->insert(*otherCurrent);
-            //     ++otherCurrent;
-            // }            
+            /**
+             *FIXME
+             *
+             *maybe better implementation for this:
+             *
+            *
+            if(this == &other) {
+                return *this;
+            }
+            sortedList<T> temp = sortedList(other);
+            this->swapList(temp);
+            delete temp;
+            return *this;
+
+             *
+             */
         }
 
+        /**
+         * @brief Destructor for the SortedList class. Frees all allocated resources.
+         */
         ~SortedList() {
             SortedListNode* current = this->head;
             while(current != nullptr) {
@@ -255,6 +298,11 @@ namespace mtm {
             }
         }
 
+        /**
+         * @brief Inserts a new element into the sorted list.
+         *
+         * @param newElement The element to insert.
+         */
         void insert(const T& newElement) {
             try{
                 this->head->insert(newElement);
@@ -265,10 +313,20 @@ namespace mtm {
             }
         }
 
+        /**
+         * @brief Retrieves the number of elements in the sorted list.
+         * 
+         * @return int The length of the list.
+         */
         int length() const {
             return this->listLength;
         }
 
+        /**
+         * @brief Removes an element from the sorted list using a specified iterator.
+         *
+         * @param iter A const iterator pointing to the element to be removed.
+         */
         void remove(const ConstIterator& iter){
             ConstIterator last = this->end();
             if(!(iter != last)) {
@@ -286,7 +344,14 @@ namespace mtm {
                 current = current->next;
             }
         }
-        
+
+        /**
+         * @brief Filters the sorted list based on a specified condition.
+         *
+         * @tparam Condition A callable object that determines whether an element is included.
+         * @param condition The filtering condition.
+         * @return SortedList<T> A new list containing elements that satisfy the condition.
+         */
         template <class Condition>
         SortedList<T> filter(Condition condition) const{
             SortedList<T> filteredList;
@@ -303,6 +368,13 @@ namespace mtm {
             return filteredList;
         }
 
+        /**
+         * @brief Applies a transformation to each element in the sorted list.
+         *
+         * @tparam Function A callable object that defines the transformation.
+         * @param function The transformation function.
+         * @return SortedList<T> A new list containing the transformed elements.
+         */
         template <class Function>
         SortedList<T> apply(Function function) const{
             SortedList<T> appliedList;
@@ -349,24 +421,60 @@ namespace mtm {
             const SortedListNode* current;
             ConstIterator(const SortedListNode* current) : current(current) {}
         public:
+
+            /**
+            * @brief Copy constructor for the ConstIterator class.
+            *
+            * @param other The ConstIterator instance to copy.
+            */
             ConstIterator(const ConstIterator& other) {
                 this->current = other.current;
             }
+
+            /**
+             * @brief Assignment operator for the ConstIterator class.
+             *
+             * @param other The ConstIterator instance to assign.
+             * @return ConstIterator& A reference to the assigned iterator.
+             */
             ConstIterator& operator=(const ConstIterator& other) = default;
+
             ~ConstIterator() = default;
+
+            /**
+            * @brief Accesses the element that the iterator points to.
+            *
+            * @return T& A reference to the element.
+            * @throws std::out_of_range If the iterator is out of range.
+            */
             T& operator*() const{
                 if(current->isTail()) {
                     throw std::out_of_range("Iterator is out of range");
                 }
                 return *(current->data);
             }
+
+            /**
+            * @brief Advances the iterator to the next element in the list.
+            *
+            * @return ConstIterator& A reference to the advanced iterator.
+            * @throws std::out_of_range If the iterator is out of range.
+            */
             ConstIterator& operator++(){
                 if(current->isTail()){
-                    throw std::out_of_range("Iterator is out of range");                
+                    throw std::out_of_range("Iterator is out of range");
                 }
                 current = current->next;
                 return *this;
             }
+
+            /**
+            * @brief Compares two iterators for inequality.
+            *
+            * @param other The iterator to compare against.
+            * @return true If the iterators point to different elements.
+            * @return false If the iterators point to the same element.
+            */
             bool operator!=(const ConstIterator& other) const{
                 return current != other.current;
             }
