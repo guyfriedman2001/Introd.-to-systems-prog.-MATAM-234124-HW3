@@ -501,6 +501,7 @@ void printList(const mtm::SortedList<T> &list, std::ostream &os=std::cout)
 
 int main(int argc, char **argv)
 {
+    /*
     int number_of_tests = sizeof(tests) / sizeof(tests[0]);
 
     if (argc == 1)
@@ -527,5 +528,13 @@ int main(int argc, char **argv)
     }
 
     RUN_TEST(tests[test_idx - 1], tests_names[test_idx - 1]);
+    */
+    SortedList<int> list = SortedList<int>();
+    for (int i = 0; i < 700; i++){ list.insert(i); }
+    SortedList<int>::ConstIterator it = list.begin();
+    for (int i = 0 ; i < 100000; i++) {
+        ++it;
+    }
+    for (int i = 0; i < 70000; i++){ list.remove((++(list.begin()))); }
     return 0;
 }
