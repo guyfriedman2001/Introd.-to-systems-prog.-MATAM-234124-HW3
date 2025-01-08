@@ -9,7 +9,6 @@ namespace mtm {
     template <typename T>
     class SortedList {
         class SortedListNode {
-            /* Inner class, part of implementation so no documentation is provided. */
             friend class SortedList<T>;
             SortedListNode* prev;
             SortedListNode* next;
@@ -25,7 +24,7 @@ namespace mtm {
              *
              * @param data The data to store in the node.
              */
-            SortedListNode(T data): SortedListNode() { //todo ask regev
+            SortedListNode(T data): SortedListNode() {
                 try{
                     this->data = new T(data);
                 } catch (std::bad_alloc& e) {
@@ -203,7 +202,7 @@ namespace mtm {
          * @param address2 Address of the second swapped value.
          */
         template <typename V> 
-        void swap(V& address1, V& address2) { //todo ask regev
+        void swap(V& address1, V& address2) {
             V temp = address1;
             address1 = address2;
             address2 = temp;
@@ -244,7 +243,7 @@ namespace mtm {
         /**
          * @brief Constructor for the SortedList class. Initializes an empty sorted list.
          */
-        SortedList() : listLength(0){
+        SortedList() : listLength(0), head(nullptr), tail(nullptr){
             try {
                 this->head = new SortedListNode();
                 this->tail = new SortedListNode();
@@ -264,11 +263,7 @@ namespace mtm {
          */
         SortedList(const SortedList<T>& other): SortedList<T>(){
             for(const T& currentData : other) {
-                try{
-                    this->insert(currentData);
-                } catch (std::bad_alloc& e) {
-                    throw;
-                }
+                this->insert(currentData);
             }
         }
 
