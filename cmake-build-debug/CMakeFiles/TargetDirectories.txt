@@ -1,3 +1,0 @@
-/Users/guyfriedman/Documents/Technion/Semester_C_11.2024-02.2025/234124/HW3/Matam_HW3/cmake-build-debug/CMakeFiles/Matam_HW3.dir
-/Users/guyfriedman/Documents/Technion/Semester_C_11.2024-02.2025/234124/HW3/Matam_HW3/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/guyfriedman/Documents/Technion/Semester_C_11.2024-02.2025/234124/HW3/Matam_HW3/cmake-build-debug/CMakeFiles/rebuild_cache.dir
