@@ -15,9 +15,17 @@ namespace mtm {
             SortedListNode* next;
             T* data;
 
+            /**
+             * @brief Constructs an empty node for the sorted list.
+             */
             SortedListNode(): prev(nullptr), next(nullptr), data(nullptr) {}
 
-            SortedListNode(T data): SortedListNode() {
+            /**
+             * @brief Constructs a node with the given data.
+             *
+             * @param data The data to store in the node.
+             */
+            SortedListNode(T data): SortedListNode() { //todo ask regev
                 try{
                     this->data = new T(data);
                 } catch (std::bad_alloc& e) {
@@ -26,6 +34,9 @@ namespace mtm {
                 }
             }
 
+            /**
+             * @brief Deletes the current node and adjusts its neighbors accordingly.
+             */
             void deleteNode() {
                 this->prev->next = this->next;
                 this->next->prev = this->prev;
@@ -34,6 +45,11 @@ namespace mtm {
                 delete this;
             }
 
+            /**
+             * @brief Inserts a new node immediately after the current node.
+             *
+             * @param newNode The node to insert.
+             */
             void addImmediate(SortedListNode* newNode) {
                 this->next->prev = newNode;
                 newNode->next = this->next;
@@ -41,6 +57,11 @@ namespace mtm {
                 newNode->prev = this;
             }
 
+            /**
+             * @brief Inserts a new node into the sorted list, maintaining the order.
+             *
+             * @param newNode The node to insert.
+             */
             void add(SortedListNode* newNode) {
                 //if we arrived at the end of the chain
                 if (!this->hasNext()) {
@@ -57,48 +78,96 @@ namespace mtm {
             }
 
         public:
-
+            /**
+             * @brief Destructor for the SortedListNode class. Releases all allocated resources.
+             */
             ~SortedListNode() {
                 this->prev = nullptr;
                 this->next = nullptr;
                 delete this->data;
             }
 
+            /**
+             * @brief Checks if the node is the tail of the list.
+             *
+             * @return true If the node is the tail.
+             * @return false Otherwise.
+             */
             inline bool isTail() const {
                 return (this->data == nullptr)&&(this->prev != nullptr)&&(this->next == nullptr);
             }
 
+            /**
+             * @brief Checks if the node is the head of the list.
+             *
+             * @return true If the node is the head.
+             * @return false Otherwise.
+             */
             inline bool isHead() const {
                 return (this->data == nullptr)&&(this->next != nullptr)&&(this->prev == nullptr);
             }
 
+            /**
+             * @brief Checks if the node has a valid next node.
+             *
+             * @return true If there is a next node.
+             * @return false Otherwise.
+             */
             inline bool hasNext()   const {
                 return !(this->next->isTail());
             }
 
+            /**
+             * @brief Inserts a new element into the sorted list starting from this node.
+             *
+             * @param data The element to insert.
+             */
             void insert(const T& data) {
-                try{
-                     SortedListNode* newNode = new SortedListNode(data);
-                    this->add(newNode);
-                }
-                catch (std::bad_alloc& e) {
-                    throw;
-                }
+                SortedListNode* newNode = new SortedListNode(data);
+                this->add(newNode);
             }
 
-            //FIXME CORRECT FOR SYNTAX
+            /**
+             * @brief Equality comparison operator.
+             *
+             * @param other The node to compare against.
+             * @return true If the nodes are equal.
+             * @return false Otherwise.
+             */
             bool operator==(SortedListNode* other) const {
                 return (this->data == other->data);
             }
 
+            /**
+             * @brief Inequality comparison operator.
+             *
+             * @param other The node to compare against.
+             * @return true If the nodes are not equal.
+             * @return false Otherwise.
+             */
             bool operator!=(SortedListNode* other) const {
                 return !(*this == *other);
             }
 
+            /**
+             * @brief Greater-than comparison operator.
+             *
+             * @param other The node to compare against.
+             * @return true If this node is greater than the other.
+             * @return false Otherwise.
+             */
             bool operator>(SortedListNode* other) const {
                 return (this->data > other->data);
             }
 
+            /**
+             * @brief Less-than comparison operator.
+             *
+             * @param lhs The left node.
+             * @param rhs The right node.
+             * @return true if lhs > rhs.
+             * @return false Otherwise.
+             */
             friend bool operator>(const SortedListNode& lhs, const SortedListNode& rhs) {
                 if (rhs.isTail()) {
                     return true;
@@ -106,19 +175,6 @@ namespace mtm {
                 return (lhs.data > rhs.data);
             }
 
-            bool operator<(SortedListNode* other) const {
-                bool equal = *this == *other;
-                bool greater = *this > *other;
-                return (!equal) && (!greater);
-            }
-
-            bool operator<=(SortedListNode* other) const {
-                return !(*this > *other);
-            }
-
-            bool operator>=(const SortedListNode* other) const {
-                return !(*this < *other);
-            }
         };
 
         private:
@@ -126,6 +182,11 @@ namespace mtm {
         SortedListNode* head;
         SortedListNode* tail;
 
+        /**
+         * @brief Deletes a specified node from the list.
+         *
+         * @param node The node to delete, is nullptr safe.
+         */
         void deleteNode(SortedListNode* node) {
             if (node == nullptr) {
                 return;
@@ -134,13 +195,25 @@ namespace mtm {
             --(this->listLength);
         }
 
+        /**
+         * @brief Swaps the values of two things.
+         *
+         * @tparam V The type of the values to be swapped.
+         * @param address1 Address of the first swapped value.
+         * @param address2 Address of the second swapped value.
+         */
         template <typename V> 
-        void swap(V& address1, V& address2) {
+        void swap(V& address1, V& address2) { //todo ask regev
             V temp = address1;
             address1 = address2;
             address2 = temp;
         }
 
+        /**
+         * @brief Swaps the contents of the current list with another list.
+         *
+         * @param other The list to swap with.
+         */
         void swapList(SortedList& other) {
             swap<SortedListNode*>(this->head, other.head);
             swap<SortedListNode*>(this->tail, other.tail);
@@ -232,13 +305,8 @@ namespace mtm {
          * @param newElement The element to insert.
          */
         void insert(const T& newElement) {
-            try{
-                this->head->insert(newElement);
-                ++(this->listLength);
-            }
-            catch (std::bad_alloc& e) {
-                throw;
-            }
+            this->head->insert(newElement);
+            ++(this->listLength);
         }
 
         /**
@@ -263,8 +331,7 @@ namespace mtm {
             SortedListNode* current = this->head->next;
             for(ConstIterator curr = begin(); curr!= last; ++curr, current = current->next){
                 if(!(curr != iter)) {
-                    current->deleteNode();
-                    --(this->listLength);
+                    this->deleteNode(current);
                     return;
                 }
             }
@@ -282,12 +349,7 @@ namespace mtm {
             SortedList<T> filteredList;
             for(const T& val : *this){
                 if(condition(val)) {
-                    try{
-                        filteredList.insert(val);
-                    } 
-                    catch (std::bad_alloc& e) {
-                        throw;
-                    }
+                    filteredList.insert(val);
                 }
             }
             return filteredList;
@@ -303,14 +365,8 @@ namespace mtm {
         template <class Function>
         SortedList<T> apply(Function function) const{
             SortedList<T> appliedList;
-            
             for(const T& val : *this){
-                try{
-                    appliedList.insert(function(val));
-                } 
-                catch (std::bad_alloc& e) {
-                    throw;
-                }
+                appliedList.insert(function(val));
             }
             return appliedList;
         }

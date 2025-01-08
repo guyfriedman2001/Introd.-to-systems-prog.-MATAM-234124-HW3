@@ -80,7 +80,7 @@ void TaskManager::printAllEmployees() const{
     }
 }
 void TaskManager::printTasks(const SortedList<Task>& tasks){
-    for(Task currentTask : tasks){
+    for(const Task& currentTask : tasks){
         std::cout << currentTask << std::endl;
     }
 }
