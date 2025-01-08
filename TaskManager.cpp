@@ -23,14 +23,9 @@ void TaskManager::assignTask(const string &personName, const Task &task){
         currentEmployee = numOfEmployees;
         employees[numOfEmployees++] = newEmployee;
     }
-    try{
-        Task newTask(task.getPriority(), task.getType(), task.getDescription());
-        newTask.setId(idCounter++);
-        employees[currentEmployee].assignTask(newTask);
-    }
-    catch (std::bad_alloc& e){
-        throw;
-    }
+    Task newTask(task.getPriority(), task.getType(), task.getDescription());
+    newTask.setId(idCounter++);
+    employees[currentEmployee].assignTask(newTask);
 }
 
 void TaskManager::completeTask(const string &personName){
@@ -38,14 +33,7 @@ void TaskManager::completeTask(const string &personName){
     if(currentEmployee == NOT_FOUND){
        return;
     }
-    try
-    {
-        employees[currentEmployee].completeTask();
-    }
-    catch (const std::runtime_error& e)
-    {
-        throw;
-    }
+    employees[currentEmployee].completeTask();
 }
 
 const Task TaskManager::setPriority(const Task& tasks, TaskType type, int priority){
@@ -63,13 +51,8 @@ void TaskManager::bumpPriorityByType(TaskType type, int priority){
     }
     for(int i = 0; i < numOfEmployees; i++){
         SortedList<Task> oldTasks = this->employees[i].getTasks();
-        try{
-            SortedList<Task> newTasks = oldTasks.apply([type, priority](Task task){ return setPriority(task, type, priority); });
-             this->employees[i].setTasks(newTasks);
-        }
-        catch (std::bad_alloc& e){
-            throw;
-        } 
+        SortedList<Task> newTasks = oldTasks.apply([type, priority](Task task){ return setPriority(task, type, priority); });
+        this->employees[i].setTasks(newTasks);
     }
 
 }
@@ -91,14 +74,8 @@ void TaskManager::printAllTasks() const{
 
 void TaskManager::printTasksByType(TaskType type) const{
     SortedList<Task> allTasks = getAllEmployeesTasks();
-    try{
-        SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
-        printTasks(tasksByType);
-    }
-    catch (std::bad_alloc& e){
-        throw;
-    }
-    
+    SortedList<Task> tasksByType = allTasks.filter([type](Task task) { return (task.getType() == type);});
+    printTasks(tasksByType);
 }
 SortedList<Task> TaskManager::getAllEmployeesTasks() const{
     SortedList<Task> allTasks;
