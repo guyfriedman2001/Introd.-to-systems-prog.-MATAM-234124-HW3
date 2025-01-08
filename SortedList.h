@@ -77,6 +77,7 @@ namespace mtm {
             }
 
         public:
+
             /**
              * @brief Destructor for the SortedListNode class. Releases all allocated resources.
              */
